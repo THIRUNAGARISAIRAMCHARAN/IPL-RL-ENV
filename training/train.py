@@ -5,6 +5,7 @@ import os
 import re
 import sys
 import csv
+import random
 from statistics import mean
 from typing import Any
 
@@ -91,6 +92,31 @@ def _build_reward_rows(env: IPLAuctionEnv, episode: int) -> dict[str, dict[str, 
             "squad_balance_score": round(float(sig.get("squad_balance_score", 0.0)), 4),
         }
     return rows
+
+
+def run_baseline_episode(env, ep_num, csv_path):
+    obs = env.reset()
+    done = False
+    all_rewards = []
+    
+    while not done:
+        actions = {}
+        for team_name in TEAM_NAMES:
+            team_obs = obs.get(team_name, {})
+            own_budget = float(team_obs.get('own_budget', 0.0))
+            current_bid = float(team_obs.get('current_bid', 0.0))
+            if random.random() < 0.4 and own_budget > current_bid + 0.5:
+                incr = random.uniform(0.5, 2.0)
+                amount = min(current_bid + incr, 90.0)
+                actions[team_name] = ("bid", round(amount, 1), False)
+            else:
+                actions[team_name] = ("pass", None)
+        obs, rewards_dict, done, info = env.step(actions)
+        all_rewards.extend([float(rewards_dict.get(t, 0.0)) for t in TEAM_NAMES])
+        
+    rewards_rows = _build_reward_rows(env, ep_num)
+    log_to_csv(csv_path, rewards_rows, is_first=(ep_num == 0))
+    return all_rewards
 
 
 def log_to_csv(csv_path, rows, is_first=False):
@@ -213,17 +239,29 @@ def run_training(episodes: int = 50) -> None:
         if episode % 10 == 0 and episode > 0:
             model.save_pretrained(f"checkpoints/ep_{episode}")
 
-    # Plot Reward Curve
+    # Run Baseline
+    print("Running random baseline for 20 episodes...")
+    baseline_csv_path = "training/logs/baseline_rewards.csv"
+    env_baseline = IPLAuctionEnv()
+    baseline_avg_rewards = []
+    for episode in range(20):
+        reward_list = run_baseline_episode(env_baseline, episode, baseline_csv_path)
+        avg_reward = mean(reward_list) if reward_list else 0.0
+        baseline_avg_rewards.append(avg_reward)
+        print(f"Baseline Ep {episode:2d} | Avg: {avg_reward:+.2f}")
+
+    # Plot Comparison Curve
     plt.figure(figsize=(10, 6))
-    plt.plot(range(episodes), avg_rewards_per_episode, label='Average Reward', color='blue')
+    plt.plot(range(episodes), avg_rewards_per_episode, label='Trained Agent', color='blue')
+    plt.plot(range(20), baseline_avg_rewards, label='Random Baseline', color='gray')
     plt.xlabel('Episode')
-    plt.ylabel('Total Reward')
-    plt.title('Training Reward Curve')
+    plt.ylabel('Average Total Reward')
+    plt.title('Trained Agents vs Random Baseline')
     plt.grid(True)
     plt.legend()
-    plot_path = "reward_curve.png"
+    plot_path = "training/logs/comparison_curve.png"
     plt.savefig(plot_path)
-    print(f"Training complete! Results saved to {csv_path} and plot saved to {plot_path}.")
+    print(f"Training and baseline complete! Results saved and plot saved to {plot_path}.")
 
 
 if __name__ == "__main__":

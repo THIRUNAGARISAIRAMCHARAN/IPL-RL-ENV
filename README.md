@@ -54,7 +54,7 @@ python training/train.py --episodes 100
 For an end-to-end walkthrough (cloning, setup, training, and visualization), refer to the [IPL_RL_Demo.ipynb](IPL_RL_Demo.ipynb).
 
 ## Results
-![Reward Curve](reward_curve.png)
+![Trained agents vs random baseline — average reward per episode](training/logs/comparison_curve.png)
 
 | Metric | Before Training | After Training |
 | :--- | :--- | :--- |
