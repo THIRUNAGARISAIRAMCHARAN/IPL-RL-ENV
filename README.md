@@ -67,8 +67,11 @@ For an end-to-end walkthrough (cloning, setup, training, and visualization), ref
 Experience the live auction logic interactively:
 - **HuggingFace Space**: [Try the Interactive Auction](https://huggingface.co/spaces/THIRUNAGARISAIRAMCHARAN/IPL-RL-ENV)
 
-## Links
-- **Blog**: [Full Project Narrative (BLOG.md)](BLOG.md)
-- **Video**: [Project Overview (YouTube)](https://youtube.com/watch?v=placeholder)
-- **Notebook**: [Colab Demo (IPL_RL_Demo.ipynb)](https://colab.research.google.com/github/THIRUNAGARISAIRAMCHARAN/IPL-RL-ENV/blob/main/IPL_RL_Demo.ipynb)
+## Video Demo
+[![Watch the demo](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/VIDEO_ID)
+
+## References
 - **HuggingFace Space**: [Live App](https://huggingface.co/spaces/THIRUNAGARISAIRAMCHARAN/IPL-RL-ENV)
+- **Colab Notebook**: [Colab Demo (IPL_RL_Demo.ipynb)](https://colab.research.google.com/github/THIRUNAGARISAIRAMCHARAN/IPL-RL-ENV/blob/main/IPL_RL_Demo.ipynb)
+- **Blog post**: [Full Project Narrative (BLOG.md)](BLOG.md)
+- **Video**: [YouTube Demo](https://youtu.be/VIDEO_ID)
