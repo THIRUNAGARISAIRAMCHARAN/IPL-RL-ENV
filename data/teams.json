@@ -1,0 +1,50 @@
+[
+  {
+    "id": "MI",
+    "name": "Mumbai Indians",
+    "strategy": "aggressive",
+    "budget_cr": 90
+  },
+  {
+    "id": "CSK",
+    "name": "Chennai Super Kings",
+    "strategy": "conservative",
+    "budget_cr": 90
+  },
+  {
+    "id": "RCB",
+    "name": "Royal Challengers Bengaluru",
+    "strategy": "aggressive",
+    "budget_cr": 90
+  },
+  {
+    "id": "KKR",
+    "name": "Kolkata Knight Riders",
+    "strategy": "balanced",
+    "budget_cr": 90
+  },
+  {
+    "id": "DC",
+    "name": "Delhi Capitals",
+    "strategy": "role_filler",
+    "budget_cr": 90
+  },
+  {
+    "id": "RR",
+    "name": "Rajasthan Royals",
+    "strategy": "conservative",
+    "budget_cr": 90
+  },
+  {
+    "id": "PBKS",
+    "name": "Punjab Kings",
+    "strategy": "balanced",
+    "budget_cr": 90
+  },
+  {
+    "id": "SRH",
+    "name": "Sunrisers Hyderabad",
+    "strategy": "role_filler",
+    "budget_cr": 90
+  }
+]

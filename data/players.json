@@ -1,0 +1,4002 @@
+[
+  {
+    "id": 1,
+    "name": "Virat Kohli",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 3.0,
+    "tier": "MARQUEE",
+    "visible_stats": {
+      "batting_avg": 31.1,
+      "strike_rate": 124.4,
+      "bowling_economy": 6.55,
+      "wickets_per_match": 0.38
+    },
+    "hidden_true_form": 0.88,
+    "injury_risk": 0.06,
+    "synergy_tags": [
+      "anchor",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Rohit Sharma",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 3.5,
+    "tier": "MARQUEE",
+    "visible_stats": {
+      "batting_avg": 34.2,
+      "strike_rate": 130.8,
+      "bowling_economy": 7.0,
+      "wickets_per_match": 0.56
+    },
+    "hidden_true_form": 0.96,
+    "injury_risk": 0.09,
+    "synergy_tags": [
+      "anchor",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "MS Dhoni",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 2.5,
+    "tier": "MARQUEE",
+    "visible_stats": {
+      "batting_avg": 37.3,
+      "strike_rate": 137.2,
+      "bowling_economy": 7.45,
+      "wickets_per_match": 0.74
+    },
+    "hidden_true_form": 1.04,
+    "injury_risk": 0.12,
+    "synergy_tags": [
+      "anchor",
+      "finisher"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Ravindra Jadeja",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 3.0,
+    "tier": "MARQUEE",
+    "visible_stats": {
+      "batting_avg": 40.4,
+      "strike_rate": 143.6,
+      "bowling_economy": 7.9,
+      "wickets_per_match": 0.92
+    },
+    "hidden_true_form": 1.12,
+    "injury_risk": 0.15,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Jasprit Bumrah",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 3.5,
+    "tier": "MARQUEE",
+    "visible_stats": {
+      "batting_avg": 43.5,
+      "strike_rate": 150.0,
+      "bowling_economy": 6.1,
+      "wickets_per_match": 1.1
+    },
+    "hidden_true_form": 1.2,
+    "injury_risk": 0.18,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Andre Russell",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 2.5,
+    "tier": "MARQUEE",
+    "visible_stats": {
+      "batting_avg": 46.6,
+      "strike_rate": 156.4,
+      "bowling_economy": 6.55,
+      "wickets_per_match": 0.2
+    },
+    "hidden_true_form": 1.28,
+    "injury_risk": 0.03,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Sunil Narine",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 3.0,
+    "tier": "MARQUEE",
+    "visible_stats": {
+      "batting_avg": 49.7,
+      "strike_rate": 118.0,
+      "bowling_economy": 7.0,
+      "wickets_per_match": 0.38
+    },
+    "hidden_true_form": 1.36,
+    "injury_risk": 0.06,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Jos Buttler",
+    "role": "WK",
+    "nationality": "OVS",
+    "base_price_cr": 3.5,
+    "tier": "MARQUEE",
+    "visible_stats": {
+      "batting_avg": 28.0,
+      "strike_rate": 124.4,
+      "bowling_economy": 7.45,
+      "wickets_per_match": 0.56
+    },
+    "hidden_true_form": 0.8,
+    "injury_risk": 0.09,
+    "synergy_tags": [
+      "anchor",
+      "finisher"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Pat Cummins",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 2.5,
+    "tier": "MARQUEE",
+    "visible_stats": {
+      "batting_avg": 31.1,
+      "strike_rate": 130.8,
+      "bowling_economy": 7.9,
+      "wickets_per_match": 0.74
+    },
+    "hidden_true_form": 0.88,
+    "injury_risk": 0.12,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Rishabh Pant",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 3.0,
+    "tier": "MARQUEE",
+    "visible_stats": {
+      "batting_avg": 34.2,
+      "strike_rate": 137.2,
+      "bowling_economy": 6.1,
+      "wickets_per_match": 0.92
+    },
+    "hidden_true_form": 0.96,
+    "injury_risk": 0.15,
+    "synergy_tags": [
+      "anchor",
+      "finisher"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Shubman Gill",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 2.0,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 22,
+      "strike_rate": 113,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.1
+    },
+    "hidden_true_form": 0.5,
+    "injury_risk": 0.0,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Yashasvi Jaiswal",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.92,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 25,
+      "strike_rate": 120,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.7
+    },
+    "hidden_true_form": 0.63,
+    "injury_risk": 0.07,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Suryakumar Yadav",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.84,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 28,
+      "strike_rate": 127,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 1.3
+    },
+    "hidden_true_form": 0.76,
+    "injury_risk": 0.14,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "KL Rahul",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.76,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 31,
+      "strike_rate": 134,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.46
+    },
+    "hidden_true_form": 0.89,
+    "injury_risk": 0.21,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Shreyas Iyer",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.68,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 34,
+      "strike_rate": 141,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 1.06
+    },
+    "hidden_true_form": 1.02,
+    "injury_risk": 0.28,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Ruturaj Gaikwad",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 2.0,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 37,
+      "strike_rate": 148,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.22
+    },
+    "hidden_true_form": 1.15,
+    "injury_risk": 0.05,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Faf du Plessis",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.92,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 40,
+      "strike_rate": 155,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.82
+    },
+    "hidden_true_form": 1.28,
+    "injury_risk": 0.12,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "David Warner",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.84,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 43,
+      "strike_rate": 162,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 1.42
+    },
+    "hidden_true_form": 1.41,
+    "injury_risk": 0.19,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Travis Head",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.76,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 46,
+      "strike_rate": 114,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.58
+    },
+    "hidden_true_form": 0.54,
+    "injury_risk": 0.26,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Abhishek Sharma",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.68,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 49,
+      "strike_rate": 121,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 1.18
+    },
+    "hidden_true_form": 0.67,
+    "injury_risk": 0.03,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Sai Sudharsan",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 2.0,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 22,
+      "strike_rate": 128,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.34
+    },
+    "hidden_true_form": 0.8,
+    "injury_risk": 0.1,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Tilak Varma",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.92,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 25,
+      "strike_rate": 135,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.94
+    },
+    "hidden_true_form": 0.93,
+    "injury_risk": 0.17,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Rahul Tripathi",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.84,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 28,
+      "strike_rate": 142,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 0.1
+    },
+    "hidden_true_form": 1.06,
+    "injury_risk": 0.24,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Ishan Kishan",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.76,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 31,
+      "strike_rate": 149,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.7
+    },
+    "hidden_true_form": 1.19,
+    "injury_risk": 0.01,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Rinku Singh",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.68,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 34,
+      "strike_rate": 156,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 1.3
+    },
+    "hidden_true_form": 1.32,
+    "injury_risk": 0.08,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Nitish Rana",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 2.0,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 37,
+      "strike_rate": 163,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.46
+    },
+    "hidden_true_form": 1.45,
+    "injury_risk": 0.15,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Prithvi Shaw",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.92,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 40,
+      "strike_rate": 115,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 1.06
+    },
+    "hidden_true_form": 0.58,
+    "injury_risk": 0.22,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Devdutt Padikkal",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.84,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 43,
+      "strike_rate": 122,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 0.22
+    },
+    "hidden_true_form": 0.71,
+    "injury_risk": 0.29,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Manish Pandey",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.76,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 46,
+      "strike_rate": 129,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.82
+    },
+    "hidden_true_form": 0.84,
+    "injury_risk": 0.06,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Ajinkya Rahane",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.68,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 49,
+      "strike_rate": 136,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 1.42
+    },
+    "hidden_true_form": 0.97,
+    "injury_risk": 0.13,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 31,
+    "name": "Mayank Agarwal",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 2.0,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 22,
+      "strike_rate": 143,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.58
+    },
+    "hidden_true_form": 1.1,
+    "injury_risk": 0.2,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Aiden Markram",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.92,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 25,
+      "strike_rate": 150,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 1.18
+    },
+    "hidden_true_form": 1.23,
+    "injury_risk": 0.27,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 33,
+    "name": "Kane Williamson",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.84,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 28,
+      "strike_rate": 157,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 0.34
+    },
+    "hidden_true_form": 1.36,
+    "injury_risk": 0.04,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 34,
+    "name": "Devon Conway",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.76,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 31,
+      "strike_rate": 164,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.94
+    },
+    "hidden_true_form": 1.49,
+    "injury_risk": 0.11,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Quinton de Kock",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.68,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 34,
+      "strike_rate": 116,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 0.1
+    },
+    "hidden_true_form": 0.62,
+    "injury_risk": 0.18,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 36,
+    "name": "Kusal Mendis",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 2.0,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 37,
+      "strike_rate": 123,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.7
+    },
+    "hidden_true_form": 0.75,
+    "injury_risk": 0.25,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 37,
+    "name": "Jonny Bairstow",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.92,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 40,
+      "strike_rate": 130,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 1.3
+    },
+    "hidden_true_form": 0.88,
+    "injury_risk": 0.02,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 38,
+    "name": "Sarfaraz Khan",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.84,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 43,
+      "strike_rate": 137,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 0.46
+    },
+    "hidden_true_form": 1.01,
+    "injury_risk": 0.09,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 39,
+    "name": "Rajat Patidar",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.76,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 46,
+      "strike_rate": 144,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 1.06
+    },
+    "hidden_true_form": 1.14,
+    "injury_risk": 0.16,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 40,
+    "name": "Anmolpreet Singh",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.68,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 49,
+      "strike_rate": 151,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 0.22
+    },
+    "hidden_true_form": 1.27,
+    "injury_risk": 0.23,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 41,
+    "name": "Priyam Garg",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 2.0,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 22,
+      "strike_rate": 158,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.82
+    },
+    "hidden_true_form": 1.4,
+    "injury_risk": 0.0,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 42,
+    "name": "Atharva Taide",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.92,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 25,
+      "strike_rate": 165,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 1.42
+    },
+    "hidden_true_form": 0.53,
+    "injury_risk": 0.07,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 43,
+    "name": "Shahrukh Khan",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.84,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 28,
+      "strike_rate": 117,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 0.58
+    },
+    "hidden_true_form": 0.66,
+    "injury_risk": 0.14,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 44,
+    "name": "Rahmanullah Gurbaz",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.76,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 31,
+      "strike_rate": 124,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 1.18
+    },
+    "hidden_true_form": 0.79,
+    "injury_risk": 0.21,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 45,
+    "name": "Harry Brook",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.68,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 34,
+      "strike_rate": 131,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 0.34
+    },
+    "hidden_true_form": 0.92,
+    "injury_risk": 0.28,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 46,
+    "name": "Jake Fraser-McGurk",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 2.0,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 37,
+      "strike_rate": 138,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.94
+    },
+    "hidden_true_form": 1.05,
+    "injury_risk": 0.05,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 47,
+    "name": "Shimron Hetmyer",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.92,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 40,
+      "strike_rate": 145,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.1
+    },
+    "hidden_true_form": 1.18,
+    "injury_risk": 0.12,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 48,
+    "name": "Sherfane Rutherford",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.84,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 43,
+      "strike_rate": 152,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 0.7
+    },
+    "hidden_true_form": 1.31,
+    "injury_risk": 0.19,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 49,
+    "name": "Tim David",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.76,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 46,
+      "strike_rate": 159,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 1.3
+    },
+    "hidden_true_form": 1.44,
+    "injury_risk": 0.26,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 50,
+    "name": "Dewald Brevis",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.68,
+    "tier": "A",
+    "visible_stats": {
+      "batting_avg": 49,
+      "strike_rate": 166,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 0.46
+    },
+    "hidden_true_form": 0.57,
+    "injury_risk": 0.03,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 51,
+    "name": "Rassie van der Dussen",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 22,
+      "strike_rate": 118,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 1.06
+    },
+    "hidden_true_form": 0.7,
+    "injury_risk": 0.1,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 52,
+    "name": "Mandeep Singh",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 25,
+      "strike_rate": 125,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.22
+    },
+    "hidden_true_form": 0.83,
+    "injury_risk": 0.17,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 53,
+    "name": "Karun Nair",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 28,
+      "strike_rate": 132,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 0.82
+    },
+    "hidden_true_form": 0.96,
+    "injury_risk": 0.24,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 54,
+    "name": "Cheteshwar Pujara",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 31,
+      "strike_rate": 139,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 1.42
+    },
+    "hidden_true_form": 1.09,
+    "injury_risk": 0.01,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 55,
+    "name": "Hanuma Vihari",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 34,
+      "strike_rate": 146,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 0.58
+    },
+    "hidden_true_form": 1.22,
+    "injury_risk": 0.08,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 56,
+    "name": "Subhranshu Senapati",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 37,
+      "strike_rate": 153,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 1.18
+    },
+    "hidden_true_form": 1.35,
+    "injury_risk": 0.15,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 57,
+    "name": "Vishnu Vinod",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 40,
+      "strike_rate": 160,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.34
+    },
+    "hidden_true_form": 1.48,
+    "injury_risk": 0.22,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 58,
+    "name": "Anuj Rawat",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 43,
+      "strike_rate": 167,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 0.94
+    },
+    "hidden_true_form": 0.61,
+    "injury_risk": 0.29,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 59,
+    "name": "Shivam Dube",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 46,
+      "strike_rate": 119,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.1
+    },
+    "hidden_true_form": 0.74,
+    "injury_risk": 0.06,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 60,
+    "name": "Abdul Samad",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 49,
+      "strike_rate": 126,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 0.7
+    },
+    "hidden_true_form": 0.87,
+    "injury_risk": 0.13,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 61,
+    "name": "Aniket Verma",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 22,
+      "strike_rate": 133,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 1.3
+    },
+    "hidden_true_form": 1.0,
+    "injury_risk": 0.2,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 62,
+    "name": "Riyan Parag",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 25,
+      "strike_rate": 140,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.46
+    },
+    "hidden_true_form": 1.13,
+    "injury_risk": 0.27,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 63,
+    "name": "Deepak Hooda",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 28,
+      "strike_rate": 147,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 1.06
+    },
+    "hidden_true_form": 1.26,
+    "injury_risk": 0.04,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 64,
+    "name": "Rahul Tewatia",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 31,
+      "strike_rate": 154,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.22
+    },
+    "hidden_true_form": 1.39,
+    "injury_risk": 0.11,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 65,
+    "name": "Lalit Yadav",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 34,
+      "strike_rate": 161,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 0.82
+    },
+    "hidden_true_form": 0.52,
+    "injury_risk": 0.18,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 66,
+    "name": "Sameer Rizvi",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 37,
+      "strike_rate": 113,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 1.42
+    },
+    "hidden_true_form": 0.65,
+    "injury_risk": 0.25,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 67,
+    "name": "Nehal Wadhera",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 40,
+      "strike_rate": 120,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.58
+    },
+    "hidden_true_form": 0.78,
+    "injury_risk": 0.02,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 68,
+    "name": "Naman Dhir",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 43,
+      "strike_rate": 127,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 1.18
+    },
+    "hidden_true_form": 0.91,
+    "injury_risk": 0.09,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 69,
+    "name": "Yash Dhull",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 46,
+      "strike_rate": 134,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.34
+    },
+    "hidden_true_form": 1.04,
+    "injury_risk": 0.16,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 70,
+    "name": "Rohan Kunnummal",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 49,
+      "strike_rate": 141,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 0.94
+    },
+    "hidden_true_form": 1.17,
+    "injury_risk": 0.23,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 71,
+    "name": "Baba Indrajith",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 22,
+      "strike_rate": 148,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.1
+    },
+    "hidden_true_form": 1.3,
+    "injury_risk": 0.0,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 72,
+    "name": "Narayan Jagadeesan",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 25,
+      "strike_rate": 155,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.7
+    },
+    "hidden_true_form": 1.43,
+    "injury_risk": 0.07,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 73,
+    "name": "KS Bharat",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 28,
+      "strike_rate": 162,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 1.3
+    },
+    "hidden_true_form": 0.56,
+    "injury_risk": 0.14,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 74,
+    "name": "Vivrant Sharma",
+    "role": "BAT",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 31,
+      "strike_rate": 114,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.46
+    },
+    "hidden_true_form": 0.69,
+    "injury_risk": 0.21,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 75,
+    "name": "Rilee Rossouw",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 34,
+      "strike_rate": 121,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 1.06
+    },
+    "hidden_true_form": 0.82,
+    "injury_risk": 0.28,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 76,
+    "name": "Ben McDermott",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 37,
+      "strike_rate": 128,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.22
+    },
+    "hidden_true_form": 0.95,
+    "injury_risk": 0.05,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 77,
+    "name": "Daryl Mitchell",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 40,
+      "strike_rate": 135,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.82
+    },
+    "hidden_true_form": 1.08,
+    "injury_risk": 0.12,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 78,
+    "name": "Alex Hales",
+    "role": "BAT",
+    "nationality": "OVS",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 43,
+      "strike_rate": 142,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 1.42
+    },
+    "hidden_true_form": 1.21,
+    "injury_risk": 0.19,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 79,
+    "name": "Mohammed Shami",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 135,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 0.78
+    },
+    "hidden_true_form": 1.34,
+    "injury_risk": 0.26,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 80,
+    "name": "Mohammed Siraj",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 142,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 1.38
+    },
+    "hidden_true_form": 1.47,
+    "injury_risk": 0.03,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 81,
+    "name": "Arshdeep Singh",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 149,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 0.54
+    },
+    "hidden_true_form": 0.6,
+    "injury_risk": 0.1,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 82,
+    "name": "Yuzvendra Chahal",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 101,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.14
+    },
+    "hidden_true_form": 0.73,
+    "injury_risk": 0.17,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 83,
+    "name": "Kuldeep Yadav",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 108,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.3
+    },
+    "hidden_true_form": 0.86,
+    "injury_risk": 0.24,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 84,
+    "name": "Ravi Bishnoi",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 26,
+      "strike_rate": 115,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 0.9
+    },
+    "hidden_true_form": 0.99,
+    "injury_risk": 0.01,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 85,
+    "name": "Bhuvneshwar Kumar",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 29,
+      "strike_rate": 122,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 1.5
+    },
+    "hidden_true_form": 1.12,
+    "injury_risk": 0.08,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 86,
+    "name": "T Natarajan",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 32,
+      "strike_rate": 129,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 0.66
+    },
+    "hidden_true_form": 1.25,
+    "injury_risk": 0.15,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 87,
+    "name": "Avesh Khan",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 35,
+      "strike_rate": 136,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.26
+    },
+    "hidden_true_form": 1.38,
+    "injury_risk": 0.22,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 88,
+    "name": "Khaleel Ahmed",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 38,
+      "strike_rate": 143,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.42
+    },
+    "hidden_true_form": 0.51,
+    "injury_risk": 0.29,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 89,
+    "name": "Mukesh Kumar",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 150,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.02
+    },
+    "hidden_true_form": 0.64,
+    "injury_risk": 0.06,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 90,
+    "name": "Prasidh Krishna",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 102,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 1.62
+    },
+    "hidden_true_form": 0.77,
+    "injury_risk": 0.13,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 91,
+    "name": "Deepak Chahar",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 109,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 0.78
+    },
+    "hidden_true_form": 0.9,
+    "injury_risk": 0.2,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 92,
+    "name": "Shardul Thakur",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 116,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.38
+    },
+    "hidden_true_form": 1.03,
+    "injury_risk": 0.27,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 93,
+    "name": "Ishant Sharma",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 123,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.54
+    },
+    "hidden_true_form": 1.16,
+    "injury_risk": 0.04,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 94,
+    "name": "Umesh Yadav",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 26,
+      "strike_rate": 130,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.14
+    },
+    "hidden_true_form": 1.29,
+    "injury_risk": 0.11,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 95,
+    "name": "Harshal Patel",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 29,
+      "strike_rate": 137,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.3
+    },
+    "hidden_true_form": 1.42,
+    "injury_risk": 0.18,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 96,
+    "name": "Umran Malik",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 32,
+      "strike_rate": 144,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 0.9
+    },
+    "hidden_true_form": 0.55,
+    "injury_risk": 0.25,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 97,
+    "name": "Sandeep Sharma",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 35,
+      "strike_rate": 151,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.5
+    },
+    "hidden_true_form": 0.68,
+    "injury_risk": 0.02,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 98,
+    "name": "Varun Chakaravarthy",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 38,
+      "strike_rate": 103,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.66
+    },
+    "hidden_true_form": 0.81,
+    "injury_risk": 0.09,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 99,
+    "name": "Piyush Chawla",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 110,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.26
+    },
+    "hidden_true_form": 0.94,
+    "injury_risk": 0.16,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 100,
+    "name": "R Ashwin",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 117,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.42
+    },
+    "hidden_true_form": 1.07,
+    "injury_risk": 0.23,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 101,
+    "name": "Noor Ahmad",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 124,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.02
+    },
+    "hidden_true_form": 1.2,
+    "injury_risk": 0.0,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 102,
+    "name": "Rashid Khan",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 131,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.62
+    },
+    "hidden_true_form": 1.33,
+    "injury_risk": 0.07,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 103,
+    "name": "Mitchell Starc",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 138,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.78
+    },
+    "hidden_true_form": 1.46,
+    "injury_risk": 0.14,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 104,
+    "name": "Trent Boult",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 26,
+      "strike_rate": 145,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.38
+    },
+    "hidden_true_form": 0.59,
+    "injury_risk": 0.21,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 105,
+    "name": "Anrich Nortje",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 29,
+      "strike_rate": 152,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.54
+    },
+    "hidden_true_form": 0.72,
+    "injury_risk": 0.28,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 106,
+    "name": "Kagiso Rabada",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 32,
+      "strike_rate": 104,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.14
+    },
+    "hidden_true_form": 0.85,
+    "injury_risk": 0.05,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 107,
+    "name": "Jofra Archer",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 35,
+      "strike_rate": 111,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 0.3
+    },
+    "hidden_true_form": 0.98,
+    "injury_risk": 0.12,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 108,
+    "name": "Lockie Ferguson",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 38,
+      "strike_rate": 118,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.9
+    },
+    "hidden_true_form": 1.11,
+    "injury_risk": 0.19,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 109,
+    "name": "Josh Hazlewood",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 125,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.5
+    },
+    "hidden_true_form": 1.24,
+    "injury_risk": 0.26,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 110,
+    "name": "Mark Wood",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 132,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.66
+    },
+    "hidden_true_form": 1.37,
+    "injury_risk": 0.03,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 111,
+    "name": "Gerald Coetzee",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 139,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.26
+    },
+    "hidden_true_form": 0.5,
+    "injury_risk": 0.1,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 112,
+    "name": "Nandre Burger",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 146,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 0.42
+    },
+    "hidden_true_form": 0.63,
+    "injury_risk": 0.17,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 113,
+    "name": "Maheesh Theekshana",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 153,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 1.02
+    },
+    "hidden_true_form": 0.76,
+    "injury_risk": 0.24,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 114,
+    "name": "Matheesha Pathirana",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 26,
+      "strike_rate": 105,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.62
+    },
+    "hidden_true_form": 0.89,
+    "injury_risk": 0.01,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 115,
+    "name": "Adam Zampa",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 29,
+      "strike_rate": 112,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.78
+    },
+    "hidden_true_form": 1.02,
+    "injury_risk": 0.08,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 116,
+    "name": "Wanindu Hasaranga",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 32,
+      "strike_rate": 119,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.38
+    },
+    "hidden_true_form": 1.15,
+    "injury_risk": 0.15,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 117,
+    "name": "Mustafizur Rahman",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 35,
+      "strike_rate": 126,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 0.54
+    },
+    "hidden_true_form": 1.28,
+    "injury_risk": 0.22,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 118,
+    "name": "Alzarri Joseph",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 38,
+      "strike_rate": 133,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 1.14
+    },
+    "hidden_true_form": 1.41,
+    "injury_risk": 0.29,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 119,
+    "name": "Reece Topley",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 140,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 0.3
+    },
+    "hidden_true_form": 0.54,
+    "injury_risk": 0.06,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 120,
+    "name": "Spencer Johnson",
+    "role": "BOWL",
+    "nationality": "OVS",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 147,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.9
+    },
+    "hidden_true_form": 0.67,
+    "injury_risk": 0.13,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 121,
+    "name": "Harpreet Brar",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 99,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.5
+    },
+    "hidden_true_form": 0.8,
+    "injury_risk": 0.2,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 122,
+    "name": "Mayank Markande",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 106,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 0.66
+    },
+    "hidden_true_form": 0.93,
+    "injury_risk": 0.27,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 123,
+    "name": "Murugan Ashwin",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 113,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 1.26
+    },
+    "hidden_true_form": 1.06,
+    "injury_risk": 0.04,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 124,
+    "name": "Sai Kishore",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 26,
+      "strike_rate": 120,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 0.42
+    },
+    "hidden_true_form": 1.19,
+    "injury_risk": 0.11,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 125,
+    "name": "Washington Sundar",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 29,
+      "strike_rate": 127,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 1.02
+    },
+    "hidden_true_form": 1.32,
+    "injury_risk": 0.18,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 126,
+    "name": "Shahbaz Ahmed",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 1.0,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 32,
+      "strike_rate": 134,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.62
+    },
+    "hidden_true_form": 1.45,
+    "injury_risk": 0.25,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 127,
+    "name": "Akash Madhwal",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.92,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 35,
+      "strike_rate": 141,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 0.78
+    },
+    "hidden_true_form": 0.58,
+    "injury_risk": 0.02,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 128,
+    "name": "Yash Dayal",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.84,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 38,
+      "strike_rate": 148,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 1.38
+    },
+    "hidden_true_form": 0.71,
+    "injury_risk": 0.09,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 129,
+    "name": "Tushar Deshpande",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.76,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 100,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 0.54
+    },
+    "hidden_true_form": 0.84,
+    "injury_risk": 0.16,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 130,
+    "name": "Vaibhav Arora",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.68,
+    "tier": "B",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 107,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 1.14
+    },
+    "hidden_true_form": 0.97,
+    "injury_risk": 0.23,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 131,
+    "name": "Chetan Sakariya",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 114,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 0.3
+    },
+    "hidden_true_form": 1.1,
+    "injury_risk": 0.0,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 132,
+    "name": "Kartik Tyagi",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 121,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 0.9
+    },
+    "hidden_true_form": 1.23,
+    "injury_risk": 0.07,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 133,
+    "name": "M Siddharth",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 128,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 1.5
+    },
+    "hidden_true_form": 1.36,
+    "injury_risk": 0.14,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 134,
+    "name": "Suyash Sharma",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 26,
+      "strike_rate": 135,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 0.66
+    },
+    "hidden_true_form": 1.49,
+    "injury_risk": 0.21,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 135,
+    "name": "Amit Mishra",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 29,
+      "strike_rate": 142,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 1.26
+    },
+    "hidden_true_form": 0.62,
+    "injury_risk": 0.28,
+    "synergy_tags": [
+      "powerplay",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 136,
+    "name": "Jaydev Unadkat",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 32,
+      "strike_rate": 149,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 0.42
+    },
+    "hidden_true_form": 0.75,
+    "injury_risk": 0.05,
+    "synergy_tags": [
+      "spin_track",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 137,
+    "name": "Mohsin Khan",
+    "role": "BOWL",
+    "nationality": "IND",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 35,
+      "strike_rate": 101,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.02
+    },
+    "hidden_true_form": 0.88,
+    "injury_risk": 0.12,
+    "synergy_tags": [
+      "death_overs",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 138,
+    "name": "Hardik Pandya",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 38,
+      "strike_rate": 122,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 1.62
+    },
+    "hidden_true_form": 1.01,
+    "injury_risk": 0.19,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 139,
+    "name": "Axar Patel",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 129,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 0.78
+    },
+    "hidden_true_form": 1.14,
+    "injury_risk": 0.26,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 140,
+    "name": "Marcus Stoinis",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 136,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 1.38
+    },
+    "hidden_true_form": 1.27,
+    "injury_risk": 0.03,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 141,
+    "name": "Liam Livingstone",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 143,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 0.54
+    },
+    "hidden_true_form": 1.4,
+    "injury_risk": 0.1,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 142,
+    "name": "Cameron Green",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 150,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.14
+    },
+    "hidden_true_form": 0.53,
+    "injury_risk": 0.17,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 143,
+    "name": "Sam Curran",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 157,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.3
+    },
+    "hidden_true_form": 0.66,
+    "injury_risk": 0.24,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 144,
+    "name": "Moeen Ali",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 26,
+      "strike_rate": 164,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 0.9
+    },
+    "hidden_true_form": 0.79,
+    "injury_risk": 0.01,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 145,
+    "name": "Mitchell Marsh",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 29,
+      "strike_rate": 116,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 1.5
+    },
+    "hidden_true_form": 0.92,
+    "injury_risk": 0.08,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 146,
+    "name": "Glenn Maxwell",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 32,
+      "strike_rate": 123,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 0.66
+    },
+    "hidden_true_form": 1.05,
+    "injury_risk": 0.15,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 147,
+    "name": "Krunal Pandya",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 35,
+      "strike_rate": 130,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.26
+    },
+    "hidden_true_form": 1.18,
+    "injury_risk": 0.22,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 148,
+    "name": "Nitish Kumar Reddy",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 38,
+      "strike_rate": 137,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.42
+    },
+    "hidden_true_form": 1.31,
+    "injury_risk": 0.29,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 149,
+    "name": "Abhishek Porel",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 144,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.02
+    },
+    "hidden_true_form": 1.44,
+    "injury_risk": 0.06,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 150,
+    "name": "Romario Shepherd",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 151,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 1.62
+    },
+    "hidden_true_form": 0.57,
+    "injury_risk": 0.13,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 151,
+    "name": "Jason Holder",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 158,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 0.78
+    },
+    "hidden_true_form": 0.7,
+    "injury_risk": 0.2,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 152,
+    "name": "Sikandar Raza",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 165,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.38
+    },
+    "hidden_true_form": 0.83,
+    "injury_risk": 0.27,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 153,
+    "name": "Daryl Mitchell Jr",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 117,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.54
+    },
+    "hidden_true_form": 0.96,
+    "injury_risk": 0.04,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 154,
+    "name": "Rachin Ravindra",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 26,
+      "strike_rate": 124,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.14
+    },
+    "hidden_true_form": 1.09,
+    "injury_risk": 0.11,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 155,
+    "name": "Rovman Powell",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 29,
+      "strike_rate": 131,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.3
+    },
+    "hidden_true_form": 1.22,
+    "injury_risk": 0.18,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 156,
+    "name": "Rahul Chahar",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 32,
+      "strike_rate": 138,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 0.9
+    },
+    "hidden_true_form": 1.35,
+    "injury_risk": 0.25,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 157,
+    "name": "Shivam Mavi",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 35,
+      "strike_rate": 145,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.5
+    },
+    "hidden_true_form": 1.48,
+    "injury_risk": 0.02,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 158,
+    "name": "Venkatesh Iyer",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 38,
+      "strike_rate": 152,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.66
+    },
+    "hidden_true_form": 0.61,
+    "injury_risk": 0.09,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 159,
+    "name": "Shahbaz Nadeem",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 159,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.26
+    },
+    "hidden_true_form": 0.74,
+    "injury_risk": 0.16,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 160,
+    "name": "Akeal Hosein",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 166,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.42
+    },
+    "hidden_true_form": 0.87,
+    "injury_risk": 0.23,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 161,
+    "name": "Kyle Mayers",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 118,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.02
+    },
+    "hidden_true_form": 1.0,
+    "injury_risk": 0.0,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 162,
+    "name": "Tim Southee",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 125,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 1.62
+    },
+    "hidden_true_form": 1.13,
+    "injury_risk": 0.07,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 163,
+    "name": "Daniel Sams",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 132,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.78
+    },
+    "hidden_true_form": 1.26,
+    "injury_risk": 0.14,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 164,
+    "name": "Odean Smith",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 26,
+      "strike_rate": 139,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.38
+    },
+    "hidden_true_form": 1.39,
+    "injury_risk": 0.21,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 165,
+    "name": "Fabian Allen",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 29,
+      "strike_rate": 146,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.54
+    },
+    "hidden_true_form": 0.52,
+    "injury_risk": 0.28,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 166,
+    "name": "Mohammad Nabi",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 32,
+      "strike_rate": 153,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.14
+    },
+    "hidden_true_form": 0.65,
+    "injury_risk": 0.05,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 167,
+    "name": "Azmatullah Omarzai",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 35,
+      "strike_rate": 160,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 0.3
+    },
+    "hidden_true_form": 0.78,
+    "injury_risk": 0.12,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 168,
+    "name": "Gulbadin Naib",
+    "role": "AR",
+    "nationality": "OVS",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 38,
+      "strike_rate": 167,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 0.9
+    },
+    "hidden_true_form": 0.91,
+    "injury_risk": 0.19,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 169,
+    "name": "Sai Sudarshan Jr",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 119,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.5
+    },
+    "hidden_true_form": 1.04,
+    "injury_risk": 0.26,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 170,
+    "name": "Ramandeep Singh",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 126,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.66
+    },
+    "hidden_true_form": 1.17,
+    "injury_risk": 0.03,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 171,
+    "name": "Swapnil Singh",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 133,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.26
+    },
+    "hidden_true_form": 1.3,
+    "injury_risk": 0.1,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 172,
+    "name": "K Gowtham",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 140,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 0.42
+    },
+    "hidden_true_form": 1.43,
+    "injury_risk": 0.17,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 173,
+    "name": "Shreyas Gopal",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 147,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 1.02
+    },
+    "hidden_true_form": 0.56,
+    "injury_risk": 0.24,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 174,
+    "name": "Rishi Dhawan",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 26,
+      "strike_rate": 154,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 1.62
+    },
+    "hidden_true_form": 0.69,
+    "injury_risk": 0.01,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 175,
+    "name": "Arjun Tendulkar",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 29,
+      "strike_rate": 161,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.78
+    },
+    "hidden_true_form": 0.82,
+    "injury_risk": 0.08,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 176,
+    "name": "Anukul Roy",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 32,
+      "strike_rate": 113,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.38
+    },
+    "hidden_true_form": 0.95,
+    "injury_risk": 0.15,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 177,
+    "name": "Nishant Sindhu",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 35,
+      "strike_rate": 120,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 0.54
+    },
+    "hidden_true_form": 1.08,
+    "injury_risk": 0.22,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 178,
+    "name": "Shams Mulani",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 38,
+      "strike_rate": 127,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 1.14
+    },
+    "hidden_true_form": 1.21,
+    "injury_risk": 0.29,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 179,
+    "name": "Raj Bawa",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 41,
+      "strike_rate": 134,
+      "bowling_economy": 7.52,
+      "wickets_per_match": 0.3
+    },
+    "hidden_true_form": 1.34,
+    "injury_risk": 0.06,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 180,
+    "name": "Aman Khan",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 44,
+      "strike_rate": 141,
+      "bowling_economy": 7.96,
+      "wickets_per_match": 0.9
+    },
+    "hidden_true_form": 1.47,
+    "injury_risk": 0.13,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 181,
+    "name": "Yudhvir Singh",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 17,
+      "strike_rate": 148,
+      "bowling_economy": 6.2,
+      "wickets_per_match": 1.5
+    },
+    "hidden_true_form": 0.6,
+    "injury_risk": 0.2,
+    "synergy_tags": [
+      "spin_track",
+      "finisher"
+    ]
+  },
+  {
+    "id": 182,
+    "name": "Shivam Singh",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 20,
+      "strike_rate": 155,
+      "bowling_economy": 6.64,
+      "wickets_per_match": 0.66
+    },
+    "hidden_true_form": 0.73,
+    "injury_risk": 0.27,
+    "synergy_tags": [
+      "finisher",
+      "death_overs"
+    ]
+  },
+  {
+    "id": 183,
+    "name": "Darshan Nalkande",
+    "role": "AR",
+    "nationality": "IND",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 23,
+      "strike_rate": 162,
+      "bowling_economy": 7.08,
+      "wickets_per_match": 1.26
+    },
+    "hidden_true_form": 0.86,
+    "injury_risk": 0.04,
+    "synergy_tags": [
+      "death_overs",
+      "spin_track"
+    ]
+  },
+  {
+    "id": 184,
+    "name": "Sanju Samson",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 31,
+      "strike_rate": 114,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.22
+    },
+    "hidden_true_form": 0.99,
+    "injury_risk": 0.11,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 185,
+    "name": "Dinesh Karthik",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 34,
+      "strike_rate": 121,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 0.82
+    },
+    "hidden_true_form": 1.12,
+    "injury_risk": 0.18,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 186,
+    "name": "Jitesh Sharma",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 37,
+      "strike_rate": 128,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 1.42
+    },
+    "hidden_true_form": 1.25,
+    "injury_risk": 0.25,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 187,
+    "name": "Wriddhiman Saha",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 40,
+      "strike_rate": 135,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.58
+    },
+    "hidden_true_form": 1.38,
+    "injury_risk": 0.02,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 188,
+    "name": "Dhruv Jurel",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 43,
+      "strike_rate": 142,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 1.18
+    },
+    "hidden_true_form": 0.51,
+    "injury_risk": 0.09,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 189,
+    "name": "Prabhsimran Singh",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 46,
+      "strike_rate": 149,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.34
+    },
+    "hidden_true_form": 0.64,
+    "injury_risk": 0.16,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 190,
+    "name": "Phil Salt",
+    "role": "WK",
+    "nationality": "OVS",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 49,
+      "strike_rate": 156,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 0.94
+    },
+    "hidden_true_form": 0.77,
+    "injury_risk": 0.23,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 191,
+    "name": "Nicholas Pooran",
+    "role": "WK",
+    "nationality": "OVS",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 22,
+      "strike_rate": 163,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.1
+    },
+    "hidden_true_form": 0.9,
+    "injury_risk": 0.0,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 192,
+    "name": "Heinrich Klaasen",
+    "role": "WK",
+    "nationality": "OVS",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 25,
+      "strike_rate": 115,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.7
+    },
+    "hidden_true_form": 1.03,
+    "injury_risk": 0.07,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 193,
+    "name": "Kumar Kushagra",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 28,
+      "strike_rate": 122,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 1.3
+    },
+    "hidden_true_form": 1.16,
+    "injury_risk": 0.14,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 194,
+    "name": "Ricky Bhui",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 31,
+      "strike_rate": 129,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.46
+    },
+    "hidden_true_form": 1.29,
+    "injury_risk": 0.21,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 195,
+    "name": "Upendra Yadav",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 34,
+      "strike_rate": 136,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 1.06
+    },
+    "hidden_true_form": 1.42,
+    "injury_risk": 0.28,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 196,
+    "name": "Aravindh S",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.5,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 37,
+      "strike_rate": 143,
+      "bowling_economy": 6.8,
+      "wickets_per_match": 0.22
+    },
+    "hidden_true_form": 0.55,
+    "injury_risk": 0.05,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 197,
+    "name": "Tom Banton",
+    "role": "WK",
+    "nationality": "OVS",
+    "base_price_cr": 0.42,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 40,
+      "strike_rate": 150,
+      "bowling_economy": 7.24,
+      "wickets_per_match": 0.82
+    },
+    "hidden_true_form": 0.68,
+    "injury_risk": 0.12,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  },
+  {
+    "id": 198,
+    "name": "Matthew Wade",
+    "role": "WK",
+    "nationality": "OVS",
+    "base_price_cr": 0.34,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 43,
+      "strike_rate": 157,
+      "bowling_economy": 7.68,
+      "wickets_per_match": 1.42
+    },
+    "hidden_true_form": 0.81,
+    "injury_risk": 0.19,
+    "synergy_tags": [
+      "powerplay",
+      "finisher"
+    ]
+  },
+  {
+    "id": 199,
+    "name": "KS Rohit",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.26,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 46,
+      "strike_rate": 164,
+      "bowling_economy": 8.12,
+      "wickets_per_match": 0.58
+    },
+    "hidden_true_form": 0.94,
+    "injury_risk": 0.26,
+    "synergy_tags": [
+      "finisher",
+      "anchor"
+    ]
+  },
+  {
+    "id": 200,
+    "name": "Vishnu Solanki",
+    "role": "WK",
+    "nationality": "IND",
+    "base_price_cr": 0.2,
+    "tier": "C",
+    "visible_stats": {
+      "batting_avg": 49,
+      "strike_rate": 116,
+      "bowling_economy": 8.56,
+      "wickets_per_match": 1.18
+    },
+    "hidden_true_form": 1.07,
+    "injury_risk": 0.03,
+    "synergy_tags": [
+      "anchor",
+      "powerplay"
+    ]
+  }
+]

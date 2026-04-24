@@ -1,0 +1,12 @@
+openenv
+gradio>=4.0.0
+streamlit
+numpy
+pandas
+plotly
+trl
+transformers
+torch
+datasets
+accelerate
+wandb
