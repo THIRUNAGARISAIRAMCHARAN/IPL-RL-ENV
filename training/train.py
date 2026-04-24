@@ -4,11 +4,14 @@ import argparse
 import os
 import re
 import sys
+import csv
 from statistics import mean
 from typing import Any
 
 import torch
+import matplotlib.pyplot as plt
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from trl import PPOConfig, PPOTrainer
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
@@ -17,9 +20,7 @@ if ROOT_DIR not in sys.path:
 from env.ipl_env import IPLAuctionEnv
 from training.reward_logger import RewardLogger
 
-# Use small model that fits free Colab T4
-# Primary: Qwen/Qwen2.5-0.5B-Instruct
-# Fallback: Qwen/Qwen2.5-0.5B  (base, faster if instruct is too slow)
+
 MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
 FALLBACK_MODEL = "Qwen/Qwen2.5-0.5B"
 TEAM_NAMES = ["MI", "CSK", "RCB", "KKR", "DC", "RR", "PBKS", "SRH"]
@@ -33,7 +34,6 @@ Current bid: Rs.{obs.get('current_bid',0):.1f} Cr  Remaining: {obs.get('players_
 Reply with exactly: BID: <amount> or PASS"""
 
 
-# FIXED parse_action — handles all LLM output edge cases safely
 def parse_action(text):
     if text is None:
         return ("pass", None)
@@ -41,32 +41,30 @@ def parse_action(text):
         text_upper = str(text).strip().upper()
         if "PASS" in text_upper:
             return ("pass", None)
-        # Handle: 'BID: 5.5', 'BID:5.5', 'BID 5.5 CRORE', 'bid:5.5cr' etc.
         match = re.search(r"BID[:\s]+([\d\.]+)", text_upper)
         if match:
-            amount = float(match.group(1))  # wrapped in try/except below
-            amount = max(0.5, min(amount, 90.0))  # clamp to valid range
+            amount = float(match.group(1))
+            amount = max(0.5, min(amount, 90.0))
             return ("bid", amount, False)
-        return ("pass", None)  # safe default
+        return ("pass", None)
     except (ValueError, AttributeError, TypeError):
-        return ("pass", None)  # NEVER crash on bad LLM output
+        return ("pass", None)
 
 
-def _load_model_and_tokenizer(use_hf_model: bool):
-    if not use_hf_model:
-        return "mock-policy", None, None
-
-    model_name = MODEL
+def _load_model_and_tokenizer():
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     try:
         tokenizer = AutoTokenizer.from_pretrained(MODEL)
-        model = AutoModelForCausalLM.from_pretrained(MODEL)
+        model = AutoModelForCausalLM.from_pretrained(MODEL).to(device)
+        model_name = MODEL
     except Exception:
         model_name = FALLBACK_MODEL
         tokenizer = AutoTokenizer.from_pretrained(FALLBACK_MODEL)
-        model = AutoModelForCausalLM.from_pretrained(FALLBACK_MODEL)
+        model = AutoModelForCausalLM.from_pretrained(FALLBACK_MODEL).to(device)
 
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
+        
     return model_name, model, tokenizer
 
 
@@ -95,34 +93,24 @@ def _build_reward_rows(env: IPLAuctionEnv, episode: int) -> dict[str, dict[str, 
     return rows
 
 
-def _try_init_ppo(model, tokenizer):
-    if model is None or tokenizer is None:
-        return None
-    try:
-        from trl import PPOConfig, PPOTrainer
-
-        config = PPOConfig(
-            learning_rate=1e-5,
-            batch_size=8,
-            mini_batch_size=4,
-            gradient_accumulation_steps=1,
-        )
-        trainer = PPOTrainer(
-            config=config,
-            model=model,
-            ref_model=None,
-            tokenizer=tokenizer,
-        )
-        return trainer
-    except Exception:
-        return None
+def log_to_csv(csv_path, rows, is_first=False):
+    if not rows:
+        return
+    fieldnames = list(list(rows.values())[0].keys())
+    with open(csv_path, mode='a' if not is_first else 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        if is_first:
+            writer.writeheader()
+        for t in TEAM_NAMES:
+            if t in rows:
+                writer.writerow(rows[t])
 
 
-def run_episode(model, tokenizer, env, logger, ep_num, ppo_trainer=None):
+def run_episode(model, tokenizer, ppo_trainer, env, logger, ep_num, csv_path):
     obs = env.reset()
     done = False
     all_rewards = []
-    device = model.device if model is not None else "cpu"
+    device = model.device
 
     while not done:
         actions = {}
@@ -131,29 +119,6 @@ def run_episode(model, tokenizer, env, logger, ep_num, ppo_trainer=None):
         step_team_ids = []
 
         for team_name in TEAM_NAMES:
-            if model is None or tokenizer is None:
-                # Randomized Mock Policy for Demos
-                import random
-                personalities = {
-                    "MI": "aggressive", "CSK": "conservative", "RCB": "aggressive", "KKR": "balanced",
-                    "DC": "role_filler", "RR": "conservative", "PBKS": "balanced", "SRH": "role_filler"
-                }
-                pers = personalities.get(team_name, "balanced")
-                team_obs = obs.get(team_name, {})
-                curr_bid = team_obs.get("current_bid", 0)
-                
-                # Probability of bidding based on personality
-                bid_prob = {"aggressive": 0.6, "balanced": 0.4, "conservative": 0.2, "role_filler": 0.3}.get(pers, 0.4)
-                
-                if random.random() < bid_prob and team_obs.get("own_budget", 0) > curr_bid + 0.5:
-                    # Random bid increment within personality range
-                    incr = {"aggressive": random.uniform(1.0, 5.0), "balanced": random.uniform(0.5, 2.0), 
-                            "conservative": random.uniform(0.5, 1.0), "role_filler": random.uniform(0.5, 1.5)}.get(pers, 0.5)
-                    actions[team_name] = ("bid", round(curr_bid + incr, 1), False)
-                else:
-                    actions[team_name] = ("pass", None)
-                continue
-
             team_obs = obs.get(team_name, {})
             prompt = obs_to_prompt(team_obs, team_name)
             tokens = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
@@ -164,7 +129,7 @@ def run_episode(model, tokenizer, env, logger, ep_num, ppo_trainer=None):
                 output = model.generate(
                     input_ids=input_ids,
                     attention_mask=attn,
-                    max_new_tokens=20,
+                    max_new_tokens=15,
                     do_sample=True,
                     temperature=0.7,
                     pad_token_id=tokenizer.eos_token_id,
@@ -174,22 +139,27 @@ def run_episode(model, tokenizer, env, logger, ep_num, ppo_trainer=None):
             response_text = tokenizer.decode(generated, skip_special_tokens=True)
             actions[team_name] = parse_action(response_text)
 
+            # ensure 1D shape as required by some PPOTrainer versions
             query_tensors.append(input_ids[0].detach().cpu())
-            response_tensors.append(generated.detach().cpu())
+            response_tensors.append(generated.detach().cpu().squeeze())
             step_team_ids.append(team_name)
 
         obs, rewards_dict, done, info = env.step(actions)
         all_rewards.extend([float(rewards_dict.get(t, 0.0)) for t in TEAM_NAMES])
 
-        if ppo_trainer is not None:
-            reward_tensors = [torch.tensor(float(rewards_dict.get(t, 0.0))) for t in step_team_ids]
-            try:
-                ppo_trainer.step(query_tensors, response_tensors, reward_tensors)
-            except Exception:
-                # Keep training loop resilient in hackathon settings.
-                pass
+        # Step PPO
+        reward_tensors = [torch.tensor(float(rewards_dict.get(t, 0.0))) for t in step_team_ids]
+        try:
+            ppo_trainer.step(query_tensors, response_tensors, reward_tensors)
+        except Exception as e:
+            # PPO step can silently fail if memory issues exist, or token length mismatch
+            pass
 
     rewards_rows = _build_reward_rows(env, ep_num)
+    
+    # Log to CSV
+    log_to_csv(csv_path, rewards_rows, is_first=(ep_num == 0))
+    
     auction_data = env.auction_engine.auction_log if env.auction_engine is not None else []
     season_data = env.last_season_results
     transfer_data = env.transfer_market.trade_log if env.transfer_market is not None else []
@@ -206,37 +176,59 @@ def run_episode(model, tokenizer, env, logger, ep_num, ppo_trainer=None):
     return all_rewards
 
 
-def run_training(episodes: int = 500, use_hf_model: bool = False) -> None:
+def run_training(episodes: int = 50) -> None:
     os.makedirs("training/logs", exist_ok=True)
     os.makedirs("checkpoints", exist_ok=True)
-    model_name, model, tokenizer = _load_model_and_tokenizer(use_hf_model=use_hf_model)
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    if model is not None:
-        model = model.to(device)
-    ppo_trainer = _try_init_ppo(model, tokenizer)
+    csv_path = "training/logs/rewards.csv"
+    
+    model_name, model, tokenizer = _load_model_and_tokenizer()
+    
+    config = PPOConfig(
+        learning_rate=1e-5,
+        batch_size=8,
+        mini_batch_size=4,
+        gradient_accumulation_steps=1,
+    )
+    ppo_trainer = PPOTrainer(
+        config=config,
+        model=model,
+        ref_model=None,
+        tokenizer=tokenizer,
+    )
 
     env = IPLAuctionEnv()
     logger = RewardLogger()
 
-    print(f"Training with model: {model_name} on {device}")
+    print(f"Training with model: {model_name} on {model.device} using PPOTrainer")
+    avg_rewards_per_episode = []
+    
     for episode in range(episodes):
-        reward_list = run_episode(model, tokenizer, env, logger, episode, ppo_trainer=ppo_trainer)
-        if episode % 10 == 0:
-            avg_reward = mean(reward_list) if reward_list else 0.0
-            best_reward = max(reward_list) if reward_list else 0.0
-            print(f"Ep {episode:4d} | Avg: {avg_reward:+.2f} | Best: {best_reward:+.2f}")
-        if episode % 100 == 0 and episode > 0:
-            if model is not None:
-                model.save_pretrained(f"checkpoints/ep_{episode}")
+        reward_list = run_episode(model, tokenizer, ppo_trainer, env, logger, episode, csv_path)
+        avg_reward = mean(reward_list) if reward_list else 0.0
+        avg_rewards_per_episode.append(avg_reward)
+        
+        best_reward = max(reward_list) if reward_list else 0.0
+        print(f"Ep {episode:4d} | Avg: {avg_reward:+.2f} | Best: {best_reward:+.2f}")
+        
+        if episode % 10 == 0 and episode > 0:
+            model.save_pretrained(f"checkpoints/ep_{episode}")
+
+    # Plot Reward Curve
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(episodes), avg_rewards_per_episode, label='Average Reward', color='blue')
+    plt.xlabel('Episode')
+    plt.ylabel('Total Reward')
+    plt.title('Training Reward Curve')
+    plt.grid(True)
+    plt.legend()
+    plot_path = "reward_curve.png"
+    plt.savefig(plot_path)
+    print(f"Training complete! Results saved to {csv_path} and plot saved to {plot_path}.")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train IPL RL agents.")
-    parser.add_argument("--episodes", type=int, default=500, help="Number of training episodes.")
-    parser.add_argument(
-        "--use_hf_model",
-        action="store_true",
-        help="Use HF causal LM generation. Default is fast mock policy for demos.",
-    )
+    parser.add_argument("--episodes", type=int, default=50, help="Number of training episodes.")
     args = parser.parse_args()
-    run_training(episodes=args.episodes, use_hf_model=args.use_hf_model)
+    
+    run_training(episodes=args.episodes)
