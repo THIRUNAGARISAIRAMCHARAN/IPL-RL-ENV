@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import builtins
 import importlib
 import os
 import re
@@ -43,11 +44,25 @@ if __name__ == "__main__" and not _check_required_imports():
 import numpy as np
 import pandas as pd
 import torch
-import transformers
-from tqdm.auto import tqdm
+from tqdm import tqdm
+from tqdm.auto import tqdm as auto_tqdm
 from transformers import AutoTokenizer
+from transformers import logging as hf_logging
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
-transformers.logging.set_verbosity_info()
+
+# Force all output to appear immediately in HF Space logs
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
+
+def print(*args, **kwargs):  # type: ignore[no-redef]
+    kwargs.setdefault("flush", True)
+    return builtins.print(*args, **kwargs)
+
+# Make HF download progress print to stdout instead of stderr
+hf_logging.set_verbosity_info()
+
+# Make tqdm write to stdout so HF Space logs capture it
+tqdm.monitor_interval = 0
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
@@ -97,7 +112,7 @@ def _load_model_and_tokenizer() -> tuple[str, Any, Any] | None:
     for model_id in (PRIMARY_MODEL, FALLBACK_MODEL):
         for use_4bit in (True, False):
             try:
-                with tqdm(total=1, desc="Loading weights") as progress:
+                with auto_tqdm(total=1, desc="Loading weights", file=sys.stdout) as progress:
                     if use_4bit:
                         m = AutoModelForCausalLMWithValueHead.from_pretrained(
                             model_id,
@@ -345,16 +360,19 @@ def _pct_improvement(first: float, last_10: float) -> str:
     return f"{(last_10 - first) / abs(first) * 100.0:+.0f}%"
 
 
-def run_training() -> None:
-    parser = argparse.ArgumentParser(description="IPL multi-agent LLM+PPO training.")
-    parser.add_argument(
-        "--episodes",
-        type=int,
-        default=500,
-        help="Number of new episodes in this run (default 500; use 3 for smoke test).",
-    )
-    args = parser.parse_args()
-    n_planned = max(1, int(args.episodes))
+def run_training(episodes: int | None = None) -> None:
+    if episodes is None:
+        parser = argparse.ArgumentParser(description="IPL multi-agent LLM+PPO training.")
+        parser.add_argument(
+            "--episodes",
+            type=int,
+            default=500,
+            help="Number of new episodes in this run (default 500; use 3 for smoke test).",
+        )
+        args = parser.parse_args()
+        n_planned = max(1, int(args.episodes))
+    else:
+        n_planned = max(1, int(episodes))
     print(f"Dataset: {n_planned} episodes")
 
     os.makedirs("training/logs", exist_ok=True)
