@@ -42,8 +42,8 @@ if __name__ == "__main__" and not _check_required_imports():
 import numpy as np
 import pandas as pd
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from trl import PPOConfig, PPOTrainer
+from transformers import AutoTokenizer
+from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
@@ -94,13 +94,13 @@ def _load_model_and_tokenizer() -> tuple[str, Any, Any] | None:
         for use_4bit in (True, False):
             try:
                 if use_4bit:
-                    m = AutoModelForCausalLM.from_pretrained(
+                    m = AutoModelForCausalLMWithValueHead.from_pretrained(
                         model_id,
                         load_in_4bit=True,
                         device_map="auto",
                     )
                 else:
-                    m = AutoModelForCausalLM.from_pretrained(
+                    m = AutoModelForCausalLMWithValueHead.from_pretrained(
                         model_id,
                         device_map="auto",
                     )
@@ -366,11 +366,14 @@ def run_training() -> None:
     _model_name, model, tokenizer = loaded
     ppo: Any = None
     try:
+        # trl 0.9.6: use mini_batch_size + gradient_accumulation_steps (replaces the old
+        # single batch_size=8 for optimization chunks). The config still has `batch_size`,
+        # which must equal 8 (one PPO step = 8 team queries) or step() raises.
         cfg = PPOConfig(
             learning_rate=1e-5,
-            batch_size=8,
             mini_batch_size=4,
             gradient_accumulation_steps=1,
+            batch_size=8,
         )
         ppo = PPOTrainer(
             config=cfg,
