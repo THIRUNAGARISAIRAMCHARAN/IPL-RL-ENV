@@ -10,7 +10,7 @@ from training.train import run_training
 
 def _start_training():
     try:
-        run_training(episodes=50)
+        run_training(episodes=200)
     except Exception as e:
         print(f"Training error: {e}", flush=True)
 

@@ -360,19 +360,8 @@ def _pct_improvement(first: float, last_10: float) -> str:
     return f"{(last_10 - first) / abs(first) * 100.0:+.0f}%"
 
 
-def run_training(episodes: int | None = None) -> None:
-    if episodes is None:
-        parser = argparse.ArgumentParser(description="IPL multi-agent LLM+PPO training.")
-        parser.add_argument(
-            "--episodes",
-            type=int,
-            default=500,
-            help="Number of new episodes in this run (default 500; use 3 for smoke test).",
-        )
-        args = parser.parse_args()
-        n_planned = max(1, int(args.episodes))
-    else:
-        n_planned = max(1, int(episodes))
+def run_training(episodes: int = 200) -> None:
+    n_planned = max(1, int(episodes))
     print(f"Dataset: {n_planned} episodes")
 
     os.makedirs("training/logs", exist_ok=True)
@@ -499,4 +488,12 @@ def run_training(episodes: int | None = None) -> None:
 
 
 if __name__ == "__main__":
-    run_training()
+    parser = argparse.ArgumentParser(description="IPL multi-agent LLM+PPO training.")
+    parser.add_argument(
+        "--episodes",
+        type=int,
+        default=200,
+        help="Number of training episodes.",
+    )
+    args = parser.parse_args()
+    run_training(episodes=args.episodes)
