@@ -55,7 +55,7 @@ def main() -> None:
         )
 
     print(f"[3/5] Creating/updating Space repo: {space_repo}")
-    api.create_repo(repo_id=space_repo, repo_type="space", exist_ok=True)
+    api.create_repo(repo_id=space_repo, repo_type="space", space_sdk="gradio", exist_ok=True)
 
     if logs_dir.exists():
         print(f"[4/5] Uploading logs folder: {logs_dir}")
