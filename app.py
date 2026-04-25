@@ -71,11 +71,11 @@ def run_demo_auction():
     standings_df = pd.DataFrame(standings_data, columns=["Rank", "Team", "Wins", "Losses", "NRR"]).sort_values("Rank")
     
     champion = results.get("champion", "N/A")
-    champ_text = f"## 🏆 TOURNAMENT CHAMPION: {champion} 🏆"
+    champ_text = f"## TOURNAMENT CHAMPION: {champion}"
 
     # Transfer Activity
     transfer_results = last_info.get("transfer_results", {})
-    transfer_text = "### 🔄 Mid-Season Transfers\n"
+    transfer_text = "### Mid-Season Transfers\n"
     transfers_found = False
     for tid, res in transfer_results.items():
         if res.get("accepted"):
@@ -113,13 +113,13 @@ def load_results():
 
 
 with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# 🏏 IPL Multi-Agent RL Auction Environment")
+    gr.Markdown("# IPL Multi-Agent RL Auction Environment")
     gr.Markdown("Teaching 8 AI agents to draft, manage, and optimize championship-winning squads across 3 phases.")
     
     with gr.Tab("Phase 1: Auction"):
         with gr.Row():
             with gr.Column(scale=2):
-                run_btn = gr.Button("🚀 Run Full Simulation Cycle", variant="primary")
+                run_btn = gr.Button("Run Full Simulation Cycle", variant="primary")
                 auction_log = gr.Textbox(label="Live Auction Bidding (Last 30 Events)", lines=15)
             with gr.Column(scale=1):
                 squads_out = gr.Markdown(label="Final Squad Fragments")
@@ -138,7 +138,7 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
         
     with gr.Tab("About"):
         gr.Markdown("""
-        ### \ud83c\udfcf Project Context
+        ### Project Context
         This environment tests **Long-Horizon Planning** and **Multi-Agent Interaction**. 
         
         - **Phase 1: Auction** — Agents bid for 200 players with hidden stats and noisy budget tracking.
