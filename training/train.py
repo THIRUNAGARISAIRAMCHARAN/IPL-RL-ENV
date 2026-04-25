@@ -372,23 +372,36 @@ def run_training(episodes: int = 200) -> None:
         print(line1)
         print(line2)
 
+    print("PPO Trainer ready. Starting episodes...", flush=True)
+
     try:
         for episode in range(episodes):
-            reward_list, rewards_rows = run_episode(model, tokenizer, ppo, env, episode, log)
+            print(f"\n===== Episode {episode+1}/{episodes} =====", flush=True)
+            reward_list, rewards_rows = run_episode(
+                model, tokenizer, ppo, env, episode, log
+            )
             avg_reward = mean(reward_list) if reward_list else 0.0
             best_reward = max(reward_list) if reward_list else 0.0
             avg_rewards_per_episode.append(avg_reward)
 
-            print(f"\n===== Episode {episode+1}/{episodes} =====")
-            print("--- Rewards ---")
+            print("--- Rewards ---", flush=True)
             for team in TEAM_NAMES:
                 row = rewards_rows.get(team, {})
                 r = float(row.get("TOTAL", 0.0))
-                print(f"  {team:<8}: {r:+.2f}")
-            print(f"  Avg Reward: {avg_reward:+.2f} | Best: {best_reward:+.2f}")
+                print(f"  {team:<8}: {r:+.2f}", flush=True)
+            print(
+                f"  Avg Reward: {avg_reward:+.2f} | Best: {best_reward:+.2f}", flush=True
+            )
 
             b_eff = _budget_efficiency(rewards_rows) if rewards_rows else 0.0
-            w = max(rewards_rows, key=lambda k: float(rewards_rows[k].get("TOTAL", 0.0))) if rewards_rows else "MI"
+            w = (
+                max(
+                    rewards_rows,
+                    key=lambda k: float(rewards_rows[k].get("TOTAL", 0.0)),
+                )
+                if rewards_rows
+                else "MI"
+            )
             if w in champs:
                 champs[w] += 1
 

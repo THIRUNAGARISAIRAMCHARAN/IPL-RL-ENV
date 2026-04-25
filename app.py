@@ -2,6 +2,7 @@ import gradio as gr
 import json
 import os
 import pandas as pd
+import sys
 import threading
 from env.ipl_env import IPLAuctionEnv
 from agents.base_agent import BaseIPLAgent
@@ -13,12 +14,11 @@ def _start_training():
     except Exception as e:
         print(f"Training error: {e}", flush=True)
 
-# Only start once per process (Gradio Space runtime)
-_training_started = False
-if not _training_started:
-    _training_started = True
-    t = threading.Thread(target=_start_training, daemon=True)
-    t.start()
+# Only start once per interpreter (Gradio / Space process)
+_m = sys.modules[__name__]
+if not getattr(_m, "_ipl_auto_train_started", False):
+    _m._ipl_auto_train_started = True
+    threading.Thread(target=_start_training, daemon=True).start()
 
 TEAM_NAMES = ["MI", "CSK", "RCB", "KKR", "DC", "RR", "PBKS", "SRH"]
 PERSONALITIES = [
@@ -219,7 +219,7 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
     with gr.Tab("Training Metrics"):
         results_out = gr.Textbox(label="Reward Stats", lines=10)
         gr.Button("Refresh Logs").click(fn=load_results, outputs=results_out)
-        
+
     with gr.Tab("About"):
         gr.Markdown("Environment for Multi-Agent IPL Auction RL.")
 
