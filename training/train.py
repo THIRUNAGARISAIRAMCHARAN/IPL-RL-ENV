@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import importlib
 import os
 import re
@@ -42,8 +43,11 @@ if __name__ == "__main__" and not _check_required_imports():
 import numpy as np
 import pandas as pd
 import torch
+import transformers
+from tqdm.auto import tqdm
 from transformers import AutoTokenizer
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
+transformers.logging.set_verbosity_info()
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
@@ -93,17 +97,19 @@ def _load_model_and_tokenizer() -> tuple[str, Any, Any] | None:
     for model_id in (PRIMARY_MODEL, FALLBACK_MODEL):
         for use_4bit in (True, False):
             try:
-                if use_4bit:
-                    m = AutoModelForCausalLMWithValueHead.from_pretrained(
-                        model_id,
-                        load_in_4bit=True,
-                        device_map="auto",
-                    )
-                else:
-                    m = AutoModelForCausalLMWithValueHead.from_pretrained(
-                        model_id,
-                        device_map="auto",
-                    )
+                with tqdm(total=1, desc="Loading weights") as progress:
+                    if use_4bit:
+                        m = AutoModelForCausalLMWithValueHead.from_pretrained(
+                            model_id,
+                            load_in_4bit=True,
+                            device_map="auto",
+                        )
+                    else:
+                        m = AutoModelForCausalLMWithValueHead.from_pretrained(
+                            model_id,
+                            device_map="auto",
+                        )
+                    progress.update(1)
                 tok = AutoTokenizer.from_pretrained(model_id)
                 if tok.pad_token is None:
                     tok.pad_token = tok.eos_token
@@ -349,6 +355,7 @@ def run_training() -> None:
     )
     args = parser.parse_args()
     n_planned = max(1, int(args.episodes))
+    print(f"Dataset: {n_planned} episodes")
 
     os.makedirs("training/logs", exist_ok=True)
     os.makedirs("checkpoints", exist_ok=True)
@@ -363,7 +370,8 @@ def run_training() -> None:
     if not loaded:
         print("Exiting: no model to train.")
         raise SystemExit(1)
-    _model_name, model, tokenizer = loaded
+    model_name, model, tokenizer = loaded
+    print(f"Starting GRPO training with {model_name}...")
     ppo: Any = None
     try:
         # trl 0.9.6: use mini_batch_size + gradient_accumulation_steps (replaces the old
@@ -387,6 +395,9 @@ def run_training() -> None:
     env = IPLAuctionEnv()
     log = RewardLogger()
     t0 = time.time()
+    checkpoint_path = "checkpoints/last-checkpoint"
+    if os.path.exists(checkpoint_path):
+        print(f"Resuming from: ./{checkpoint_path}")
 
     all_scores: list[float] = list(hist.tolist()) if len(hist) else []
     champs: dict[str, int] = dict(champs_hist)
