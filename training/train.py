@@ -12,6 +12,15 @@ from typing import Any
 import torch
 import matplotlib.pyplot as plt
 from transformers import AutoModelForCausalLM, AutoTokenizer
+try:
+    from trl import PPOConfig, PPOTrainer
+except ImportError:
+    try:
+        from trl.trainer import PPOConfig, PPOTrainer
+    except ImportError:
+        # Final fallback for highly specific installations
+        from trl.models import PPOConfig
+        from trl.trainer import PPOTrainer
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
