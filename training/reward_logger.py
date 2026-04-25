@@ -117,17 +117,22 @@ class RewardLogger:
         season_data,
         transfer_data,
         behavior_data,
+        *,
+        write_reward_rows: bool = True,
+        update_reward_curve: bool = True,
     ):
         with self._lock:
-            # Append 8 rows to rewards.csv (one per team)
-            for team_id, reward_row in rewards.items():
-                row = {k: reward_row.get(k, 0) for k in self.REWARDS_HEADER}
-                row["episode"] = episode
-                row["team_id"] = team_id
-                row["team_name"] = reward_row.get("team_name", team_id)
-                with open(self.FILES["rewards"], "a", newline="", encoding="utf-8") as f:
-                    writer = csv.DictWriter(f, fieldnames=self.REWARDS_HEADER)
-                    writer.writerow(row)
+            # Append 8 rows to rewards.csv (one per team), unless the env / caller already
+            # wrote the same eight rows.
+            if write_reward_rows:
+                for team_id, reward_row in rewards.items():
+                    row = {k: reward_row.get(k, 0) for k in self.REWARDS_HEADER}
+                    row["episode"] = episode
+                    row["team_id"] = team_id
+                    row["team_name"] = reward_row.get("team_name", team_id)
+                    with open(self.FILES["rewards"], "a", newline="", encoding="utf-8") as f:
+                        writer = csv.DictWriter(f, fieldnames=self.REWARDS_HEADER)
+                        writer.writerow(row)
 
             # Overwrite squads.json with latest
             self._write_json(self.FILES["squads"], squads)
@@ -144,8 +149,9 @@ class RewardLogger:
             # Append to behavior_summaries.json (for Before vs After comparison)
             self._append_json_list(self.FILES["behaviors"], behavior_data)
 
-            self.export_training_curves()
-            self._write_json(self.FILES["insights"], self.get_learning_proof())
+            if update_reward_curve:
+                self.export_training_curves()
+                self._write_json(self.FILES["insights"], self.get_learning_proof())
 
     def export_training_curves(self):
         # Read rewards.csv

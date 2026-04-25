@@ -1,47 +1,80 @@
 from __future__ import annotations
 
-import argparse
+import importlib
 import os
 import re
+import shutil
 import sys
-import csv
-import random
+import time
+from pathlib import Path
 from statistics import mean
 from typing import Any
 
+REQUIRED_PKGS: list[tuple[str, str]] = [
+    ("torch", "torch"),
+    ("transformers", "transformers"),
+    ("trl", "trl"),
+    ("openenv", "openenv"),
+    ("pandas", "pandas"),
+    ("numpy", "numpy"),
+]
+
+
+def _check_required_imports() -> bool:
+    bad: list[tuple[str, str]] = []
+    for label, name in REQUIRED_PKGS:
+        try:
+            importlib.import_module(name)
+        except ImportError:
+            bad.append((label, name))
+    if not bad:
+        return True
+    for label, _ in bad:
+        print(f"Missing: {label}")
+    for _, name in bad:
+        print(f"pip install {name}")
+    return False
+
+
+if __name__ == "__main__" and not _check_required_imports():
+    raise SystemExit(0)
+
+import numpy as np
+import pandas as pd
 import torch
-import matplotlib.pyplot as plt
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from trl import PPOConfig, PPOTrainer
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
+os.chdir(ROOT_DIR)
 
 from env.ipl_env import IPLAuctionEnv
 from training.reward_logger import RewardLogger
 
-
-MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
+PRIMARY_MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
 FALLBACK_MODEL = "Qwen/Qwen2.5-0.5B"
 TEAM_NAMES = ["MI", "CSK", "RCB", "KKR", "DC", "RR", "PBKS", "SRH"]
+REWARD_CSV = Path(ROOT_DIR) / "training" / "logs" / "rewards.csv"
 
 
-def obs_to_prompt(obs, team_name):
+def obs_to_prompt(obs: dict[str, Any], team_name: str) -> str:
     return f"""You are the {team_name} IPL team manager.
-Budget: Rs.{obs.get('own_budget',90):.1f} Cr  Squad: {len(obs.get('own_squad',[]))} players
-Player: {obs.get('current_player',{}).get('role','?')} {obs.get('current_player',{}).get('tier','?')}
-Current bid: Rs.{obs.get('current_bid',0):.1f} Cr  Remaining: {obs.get('players_remaining',0)}
+Budget: Rs.{obs.get("own_budget", 90):.1f} Cr  Squad: {len(obs.get("own_squad", []))} players
+Player: {obs.get("current_player", {}).get("role", "?")} {obs.get("current_player", {}).get("tier", "?")}
+Current bid: Rs.{obs.get("current_bid", 0.0):.1f} Cr  Remaining: {obs.get("players_remaining", 0)}
 Reply with exactly: BID: <amount> or PASS"""
 
 
-def parse_action(text):
+def parse_action(text: str | None) -> tuple:
     if text is None:
         return ("pass", None)
     try:
         text_upper = str(text).strip().upper()
         if "PASS" in text_upper:
             return ("pass", None)
-        match = re.search(r"BID[:\s]+([\d\.]+)", text_upper)
+        match = re.search(r"BID[:\s]+([\d.]+)", text_upper)
         if match:
             amount = float(match.group(1))
             amount = max(0.5, min(amount, 90.0))
@@ -51,21 +84,34 @@ def parse_action(text):
         return ("pass", None)
 
 
-def _load_model_and_tokenizer():
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    try:
-        tokenizer = AutoTokenizer.from_pretrained(MODEL)
-        model = AutoModelForCausalLM.from_pretrained(MODEL).to(device)
-        model_name = MODEL
-    except Exception:
-        model_name = FALLBACK_MODEL
-        tokenizer = AutoTokenizer.from_pretrained(FALLBACK_MODEL)
-        model = AutoModelForCausalLM.from_pretrained(FALLBACK_MODEL).to(device)
+def _device_for_model(model) -> torch.device:
+    return next(model.parameters()).device
 
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-        
-    return model_name, model, tokenizer
+
+def _load_model_and_tokenizer() -> tuple[str, Any, Any] | None:
+    last_err: str | None = None
+    for model_id in (PRIMARY_MODEL, FALLBACK_MODEL):
+        for use_4bit in (True, False):
+            try:
+                if use_4bit:
+                    m = AutoModelForCausalLM.from_pretrained(
+                        model_id,
+                        load_in_4bit=True,
+                        device_map="auto",
+                    )
+                else:
+                    m = AutoModelForCausalLM.from_pretrained(
+                        model_id,
+                        device_map="auto",
+                    )
+                tok = AutoTokenizer.from_pretrained(model_id)
+                if tok.pad_token is None:
+                    tok.pad_token = tok.eos_token
+                return model_id, m, tok
+            except Exception as e:  # noqa: BLE001
+                last_err = str(e)
+    print("Could not load a causal LM after all attempts. Last error:", last_err)
+    return None
 
 
 def _build_reward_rows(env: IPLAuctionEnv, episode: int) -> dict[str, dict[str, Any]]:
@@ -93,169 +139,332 @@ def _build_reward_rows(env: IPLAuctionEnv, episode: int) -> dict[str, dict[str, 
     return rows
 
 
-def run_baseline_episode(env, ep_num, csv_path):
-    obs = env.reset()
-    done = False
-    all_rewards = []
-    
-    while not done:
-        actions = {}
-        for team_name in TEAM_NAMES:
-            team_obs = obs.get(team_name, {})
-            own_budget = float(team_obs.get('own_budget', 0.0))
-            current_bid = float(team_obs.get('current_bid', 0.0))
-            if random.random() < 0.4 and own_budget > current_bid + 0.5:
-                incr = random.uniform(0.5, 2.0)
-                amount = min(current_bid + incr, 90.0)
-                actions[team_name] = ("bid", round(amount, 1), False)
-            else:
-                actions[team_name] = ("pass", None)
-        obs, rewards_dict, done, info = env.step(actions)
-        all_rewards.extend([float(rewards_dict.get(t, 0.0)) for t in TEAM_NAMES])
-        
-    rewards_rows = _build_reward_rows(env, ep_num)
-    log_to_csv(csv_path, rewards_rows, is_first=(ep_num == 0))
-    return all_rewards
+def _budget_efficiency(rows: dict[str, dict[str, Any]]) -> float:
+    wasteds = [float(r.get("budget_wasted_cr", 0.0)) for r in rows.values()]
+    effs = [max(0.0, min(1.0, 1.0 - w / 90.0)) for w in wasteds]
+    return 100.0 * (mean(effs) if effs else 0.0)
 
 
-def log_to_csv(csv_path, rows, is_first=False):
-    if not rows:
+def _parse_rewards_history(csv_path: Path) -> tuple[np.ndarray, dict[str, int], int, float | None, float | None]:  # noqa: UP
+    if not csv_path.is_file() or csv_path.stat().st_size < 2:
+        return (
+            np.array([]),
+            {t: 0 for t in TEAM_NAMES},
+            0,
+            None,
+            None,
+        )
+    try:
+        df = pd.read_csv(csv_path)
+    except Exception:  # noqa: BLE001
+        return np.array([]), {t: 0 for t in TEAM_NAMES}, 0, None, None
+    if df.empty or "episode" not in df.columns or "TOTAL" not in df.columns:
+        return np.array([]), {t: 0 for t in TEAM_NAMES}, 0, None, None
+    champs: dict[str, int] = {t: 0 for t in TEAM_NAMES}
+    for _, g in df.groupby("episode", sort=True):
+        try:
+            w = g.loc[g["TOTAL"].idxmax()]["team_id"]
+            w = str(w)
+            if w in champs:
+                champs[w] += 1
+        except Exception:  # noqa: BLE001
+            continue
+    by = df.groupby("episode", sort=True)["TOTAL"].mean()
+    if len(by) == 0:
+        return np.array([]), champs, 0, None, None
+    best_idx = by.values.argmax()
+    best_ep = int(by.index[best_idx])
+    best_val = float(by.values[best_idx])
+    return (
+        by.values,
+        champs,
+        int(by.index.max()),
+        best_ep,
+        best_val,
+    )
+
+
+def _fmt_hms(secs: float) -> str:
+    s = int(max(0, round(secs)))
+    h, r = divmod(s, 3600)
+    m, sec = divmod(r, 60)
+    return f"{h:02d}:{m:02d}:{sec:02d}"
+
+
+def _plateau_warning(scores: list[float]) -> None:
+    if len(scores) < 50:
         return
-    fieldnames = list(list(rows.values())[0].keys())
-    with open(csv_path, mode='a' if not is_first else 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        if is_first:
-            writer.writeheader()
-        for t in TEAM_NAMES:
-            if t in rows:
-                writer.writerow(rows[t])
+    a = float(mean(scores[-50:-30]))
+    b = float(mean(scores[-20:]))
+    if b - a < 0.5:
+        print("WARNING: Reward plateau detected. Consider stopping.")
 
 
-def run_episode(model, tokenizer, ppo_trainer, env, logger, ep_num, csv_path):
-    obs = env.reset()
+def _save_model_safe(model, path: Path) -> None:
+    path.mkdir(parents=True, exist_ok=True)
+    try:
+        model.save_pretrained(path)
+    except Exception as e:  # noqa: BLE001
+        print(f"Could not save model: {e}")
+
+
+def _copy_rewards_for_interrupt() -> None:
+    dst = Path(ROOT_DIR) / "checkpoints" / "interrupted" / "rewards.csv"
+    if REWARD_CSV.is_file():
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(REWARD_CSV, dst)
+
+
+def run_episode(
+    model,
+    tokenizer,
+    ppo_trainer,
+    env: IPLAuctionEnv,
+    ep_num: int,
+    logger: RewardLogger,
+) -> dict[str, Any]:
+    if model is None or tokenizer is None:
+        return {"rows": {}, "avg": 0.0, "best_t": 0.0, "b_eff": 0.0, "champion": "MI"}
+    dev = _device_for_model(model)
+    obs = env.reset(episode=ep_num)
     done = False
-    all_rewards = []
-    device = model.device
 
     while not done:
-        actions = {}
-        query_tensors = []
-        response_tensors = []
-        step_team_ids = []
+        o0 = obs[TEAM_NAMES[0]]
+        phase = o0.get("phase", "auction")
+        if phase == "auction":
+            actions: dict[str, Any] = {}
+            query_tensors: list = []
+            response_tensors: list = []
+            for team_name in TEAM_NAMES:
+                team_obs = obs.get(team_name, {})
+                prom = obs_to_prompt(team_obs, team_name)
+                tks = tokenizer(prom, return_tensors="pt", truncation=True, max_length=512)
+                input_ids = tks["input_ids"].to(dev)
+                attn = tks["attention_mask"].to(dev)
+                with torch.no_grad():
+                    out = model.generate(
+                        input_ids=input_ids,
+                        attention_mask=attn,
+                        max_new_tokens=15,
+                        do_sample=True,
+                        temperature=0.7,
+                        pad_token_id=tokenizer.eos_token_id,
+                    )
+                gen = out[0, input_ids.shape[1] :]
+                text = tokenizer.decode(gen, skip_special_tokens=True)
+                actions[team_name] = parse_action(text)
+                query_tensors.append(input_ids[0].detach().cpu())
+                response_tensors.append(gen.detach().cpu().squeeze())
+        else:
+            actions = {}
+            query_tensors = []
+            response_tensors = []
 
-        for team_name in TEAM_NAMES:
-            team_obs = obs.get(team_name, {})
-            prompt = obs_to_prompt(team_obs, team_name)
-            tokens = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
-            input_ids = tokens["input_ids"].to(device)
-            attn = tokens["attention_mask"].to(device)
-
-            with torch.no_grad():
-                output = model.generate(
-                    input_ids=input_ids,
-                    attention_mask=attn,
-                    max_new_tokens=15,
-                    do_sample=True,
-                    temperature=0.7,
-                    pad_token_id=tokenizer.eos_token_id,
-                )
-
-            generated = output[0, input_ids.shape[1] :]
-            response_text = tokenizer.decode(generated, skip_special_tokens=True)
-            actions[team_name] = parse_action(response_text)
-
-            # ensure 1D shape as required by some PPOTrainer versions
-            query_tensors.append(input_ids[0].detach().cpu())
-            response_tensors.append(generated.detach().cpu().squeeze())
-            step_team_ids.append(team_name)
-
-        obs, rewards_dict, done, info = env.step(actions)
-        all_rewards.extend([float(rewards_dict.get(t, 0.0)) for t in TEAM_NAMES])
-
-        # PPO/GRPO updates are optional in this compatibility mode.
-        if ppo_trainer is not None:
-            reward_tensors = [torch.tensor(float(rewards_dict.get(t, 0.0))) for t in step_team_ids]
+        obs, rewards_dict, done, _info = env.step(actions)
+        if ppo_trainer is not None and phase == "auction" and query_tensors:
             try:
-                ppo_trainer.step(query_tensors, response_tensors, reward_tensors)
-            except Exception:
+                rts = [torch.tensor(float(rewards_dict.get(TEAM_NAMES[i], 0.0))) for i in range(8)]
+                ppo_trainer.step(query_tensors, response_tensors, rts)
+            except Exception:  # noqa: BLE001
                 pass
 
-    rewards_rows = _build_reward_rows(env, ep_num)
-    
-    # Log to CSV
-    log_to_csv(csv_path, rewards_rows, is_first=(ep_num == 0))
-    
+    rows = _build_reward_rows(env, ep_num)
+    av = _ep_mean(rows)
+    bt = max(float(r["TOTAL"]) for r in rows.values())
+    champ = max(rows, key=lambda k: float(rows[k]["TOTAL"]))
+    b_eff = _budget_efficiency(rows)
     auction_data = env.auction_engine.auction_log if env.auction_engine is not None else []
     season_data = env.last_season_results
     transfer_data = env.transfer_market.trade_log if env.transfer_market is not None else []
-    behavior_data = env.get_info().get("behavior_summaries", {})
+    beh = env.get_info().get("behavior_summaries", {})
+    up_curve = ep_num % 10 == 0
     logger.log_episode(
-        episode=ep_num,
-        rewards=rewards_rows,
-        squads=env.team_squads,
-        auction_data=auction_data,
-        season_data=season_data,
-        transfer_data=transfer_data,
-        behavior_data=behavior_data,
+        ep_num,
+        rows,
+        env.team_squads,
+        auction_data,
+        season_data,
+        transfer_data,
+        beh,
+        write_reward_rows=False,
+        update_reward_curve=up_curve,
     )
-    return all_rewards
+    return {
+        "rows": rows,
+        "avg": av,
+        "best_t": bt,
+        "b_eff": b_eff,
+        "champion": champ,
+    }
 
 
-def run_training(episodes: int = 50) -> None:
+def _ep_mean(rows: dict[str, dict[str, Any]]) -> float:
+    return float(mean([float(r["TOTAL"]) for r in rows.values()]))
+
+
+def _save_model_tokenizer(model, tok, path: Path) -> None:
+    _save_model_safe(model, path)
+    if tok is not None:
+        try:
+            tok.save_pretrained(path)
+        except Exception as e:  # noqa: BLE001
+            print(f"Could not save tokenizer: {e}")
+
+
+def _summary_from_csv() -> tuple[list[float], float, int, float]:
+    if not REWARD_CSV.is_file() or REWARD_CSV.stat().st_size < 2:
+        return [], 0.0, 0, 0.0
+    try:
+        df = pd.read_csv(REWARD_CSV)
+    except Exception:  # noqa: BLE001
+        return [], 0.0, 0, 0.0
+    if df.empty or "episode" not in df.columns or "TOTAL" not in df.columns:
+        return [], 0.0, 0, 0.0
+    m = df.groupby("episode", sort=True)["TOTAL"].mean()
+    if len(m) == 0:
+        return [], 0.0, 0, 0.0
+    scores = [float(x) for x in m.tolist()]
+    sarr = m.values
+    bi = int(np.argmax(sarr))
+    best_v = float(sarr[bi])
+    best_ep = int(m.index[bi])
+    f_mean = float(mean(scores[-10:])) if len(scores) >= 10 else float(mean(scores))
+    return scores, best_v, best_ep, f_mean
+
+
+def _pct_improvement(first: float, last_10: float) -> str:
+    if abs(first) < 1e-6:
+        return "N/A" if abs(last_10) < 1e-6 else "inf"
+    return f"{(last_10 - first) / abs(first) * 100.0:+.0f}%"
+
+
+def run_training() -> None:
+    parser = argparse.ArgumentParser(description="IPL multi-agent LLM+PPO training.")
+    parser.add_argument(
+        "--episodes",
+        type=int,
+        default=500,
+        help="Number of new episodes in this run (default 500; use 3 for smoke test).",
+    )
+    args = parser.parse_args()
+    n_planned = max(1, int(args.episodes))
+
     os.makedirs("training/logs", exist_ok=True)
     os.makedirs("checkpoints", exist_ok=True)
-    csv_path = "training/logs/rewards.csv"
-    
-    model_name, model, tokenizer = _load_model_and_tokenizer()
-    
-    # TRL 1.x compatibility: no PPO symbols are guaranteed.
-    ppo_trainer = None
+    RewardLogger()
+
+    hist, champs_hist, last_ep, _, _ = _parse_rewards_history(REWARD_CSV)
+    if len(hist) > 0:
+        print(f"Resuming from episode {last_ep + 1}...")
+    start_ep = (last_ep + 1) if len(hist) > 0 else 1
+
+    loaded = _load_model_and_tokenizer()
+    if not loaded:
+        print("Exiting: no model to train.")
+        raise SystemExit(1)
+    _model_name, model, tokenizer = loaded
+    ppo: Any = None
+    try:
+        cfg = PPOConfig(
+            learning_rate=1e-5,
+            batch_size=8,
+            mini_batch_size=4,
+            gradient_accumulation_steps=1,
+        )
+        ppo = PPOTrainer(
+            config=cfg,
+            model=model,
+            ref_model=None,
+            tokenizer=tokenizer,
+        )
+    except Exception as e:  # noqa: BLE001
+        print("PPOTrainer not available, continuing without PPO steps:", e)
 
     env = IPLAuctionEnv()
-    logger = RewardLogger()
+    log = RewardLogger()
+    t0 = time.time()
 
-    print(f"Training with model: {model_name} on {model.device} (PPO updates disabled for TRL 1.x compatibility)")
-    avg_rewards_per_episode = []
-    
-    for episode in range(episodes):
-        reward_list = run_episode(model, tokenizer, ppo_trainer, env, logger, episode, csv_path)
-        avg_reward = mean(reward_list) if reward_list else 0.0
-        avg_rewards_per_episode.append(avg_reward)
-        
-        best_reward = max(reward_list) if reward_list else 0.0
-        print(f"Ep {episode:4d} | Avg: {avg_reward:+.2f} | Best: {best_reward:+.2f}")
-        
-        if episode % 10 == 0 and episode > 0:
-            model.save_pretrained(f"checkpoints/ep_{episode}")
+    all_scores: list[float] = list(hist.tolist()) if len(hist) else []
+    champs: dict[str, int] = dict(champs_hist)
+    session_best = max(all_scores) if all_scores else float("-inf")
 
-    # Run Baseline
-    print("Running random baseline for 20 episodes...")
-    baseline_csv_path = "training/logs/baseline_rewards.csv"
-    env_baseline = IPLAuctionEnv()
-    baseline_avg_rewards = []
-    for episode in range(20):
-        reward_list = run_baseline_episode(env_baseline, episode, baseline_csv_path)
-        avg_reward = mean(reward_list) if reward_list else 0.0
-        baseline_avg_rewards.append(avg_reward)
-        print(f"Baseline Ep {episode:2d} | Avg: {avg_reward:+.2f}")
+    def print_ep_line(ep: int, av: float, best_s: float, b_eff: float) -> None:
+        elapsed = time.time() - t0
+        print(
+            f"Ep {ep:04d} | Avg Reward: {av:+.1f} | Best: {best_s:+.1f} | "
+            f"Budget Eff: {b_eff:.0f}% | Time: {_fmt_hms(elapsed)}"
+        )
 
-    # Plot Comparison Curve
-    plt.figure(figsize=(10, 6))
-    plt.plot(range(episodes), avg_rewards_per_episode, label='Trained Agent', color='blue')
-    plt.plot(range(20), baseline_avg_rewards, label='Random Baseline', color='gray')
-    plt.xlabel('Episode')
-    plt.ylabel('Average Total Reward')
-    plt.title('Trained Agents vs Random Baseline')
-    plt.grid(True)
-    plt.legend()
-    plot_path = "training/logs/comparison_curve.png"
-    plt.savefig(plot_path)
-    print(f"Training and baseline complete! Results saved and plot saved to {plot_path}.")
+    def print_teams_block(rows: dict[str, dict[str, Any]]) -> None:
+        line1 = " ".join(f"[{t}: {float(rows[t]['TOTAL']):+.1f}]" for t in TEAM_NAMES[:4])
+        line2 = " ".join(f"[{t}: {float(rows[t]['TOTAL']):+.1f}]" for t in TEAM_NAMES[4:])
+        print(line1)
+        print(line2)
+
+    try:
+        for i in range(n_planned):
+            ep_num = start_ep + i
+            out = run_episode(model, tokenizer, ppo, env, ep_num, log)
+            if not out.get("rows"):
+                continue
+            av = float(out["avg"])
+            b_one = float(out["best_t"])
+            b_eff = float(out["b_eff"])
+            w = str(out.get("champion", "MI"))
+            if w in champs:
+                champs[w] += 1
+
+            if av > session_best + 1e-9:
+                session_best = av
+                print("New best reward! Saving checkpoint...")
+                _save_model_tokenizer(
+                    model,
+                    tokenizer,
+                    Path(ROOT_DIR) / "checkpoints" / "best",
+                )
+
+            print_ep_line(ep_num, av, b_one, b_eff)
+            all_scores.append(av)
+            if ep_num % 10 == 0:
+                print_teams_block(out["rows"])
+            if ep_num > 0 and ep_num % 50 == 0:
+                d = Path(ROOT_DIR) / "checkpoints" / f"ep_{ep_num}"
+                _save_model_tokenizer(model, tokenizer, d)
+
+            _plateau_warning(all_scores)
+
+    except KeyboardInterrupt:  # noqa: BLE001
+        _save_model_tokenizer(
+            model,
+            tokenizer,
+            Path(ROOT_DIR) / "checkpoints" / "interrupted",
+        )
+        _copy_rewards_for_interrupt()
+        print("Training interrupted. Progress saved.")
+        sys.exit(0)
+
+    total_t = time.time() - t0
+    all_scores, best_v, best_ep, f_mean = _summary_from_csv()
+    n_eps = n_planned
+    first = float(all_scores[0]) if all_scores else 0.0
+    impr = _pct_improvement(first, f_mean)
+    champ = max(champs, key=champs.get) if champs and sum(champs.values()) else "MI"
+    ntot = max(1, sum(champs.values()))
+    cp = 100.0 * champs.get(champ, 0) / ntot
+
+    print("==========================================")
+    print("TRAINING COMPLETE")
+    print("==========================================")
+    print(f"Total Episodes : {n_eps}")
+    print(f"Total Time     : {_fmt_hms(total_t)}")
+    print(f"Best Reward    : {best_v:+.1f} (Episode {best_ep})")
+    print(f"Final Avg (last 10) : {f_mean:+.1f}")
+    print(f"Improvement    : {impr} from episode 1")
+    print(f"Champion Team  : {champ} (won {cp:.0f}% of episodes)")
+    print("==========================================")
+    print("Next step: python scripts/generate_curve.py")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Train IPL RL agents.")
-    parser.add_argument("--episodes", type=int, default=50, help="Number of training episodes.")
-    args = parser.parse_args()
-    
-    run_training(episodes=args.episodes)
+    run_training()

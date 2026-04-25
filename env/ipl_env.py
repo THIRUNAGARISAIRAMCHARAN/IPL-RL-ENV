@@ -163,8 +163,11 @@ class IPLAuctionEnv(BaseEnvironment):
             teams.append({"id": tid, "budget_cr": self.auction_engine.team_states[tid]["budget"]})
         return teams
 
-    def reset(self) -> dict:
-        self.episode_idx += 1
+    def reset(self, episode: int | None = None) -> dict:
+        if episode is not None:
+            self.episode_idx = int(episode)
+        else:
+            self.episode_idx += 1
         self.phase = "auction"
         self.phase_step = 0
         self.done = False
