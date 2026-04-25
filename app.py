@@ -8,9 +8,13 @@ from env.ipl_env import IPLAuctionEnv
 from agents.base_agent import BaseIPLAgent
 from training.train import run_training
 
+# Single source of truth for Space + button label (must match train.py default if you change both).
+TRAIN_EPISODES = 300
+
+
 def _start_training():
     try:
-        run_training(episodes=300)
+        run_training(episodes=TRAIN_EPISODES)
     except Exception as e:
         print(f"Training error: {e}", flush=True)
 
@@ -145,23 +149,22 @@ def run_demo_auction():
     )
 
 def start_training_ui():
-    episodes = 300
     if training_status["ongoing"]:
         return "Training is already running."
     
     def worker():
         training_status["ongoing"] = True
-        training_status["msg"] = "Learning (300 episodes)..."
+        training_status["msg"] = f"Learning ({TRAIN_EPISODES} episodes)..."
         try:
-            run_training(episodes=300)
-            training_status["msg"] = "Done! 300 episodes completed."
+            run_training(episodes=TRAIN_EPISODES)
+            training_status["msg"] = f"Done! {TRAIN_EPISODES} episodes completed."
         except Exception as e:
             training_status["msg"] = f"Stopped: {str(e)}"
         finally:
             training_status["ongoing"] = False
 
     threading.Thread(target=worker).start()
-    return "Started 300-episode training in the background."
+    return f"Started {TRAIN_EPISODES}-episode training in the background."
 
 def get_training_status():
     return training_status["msg"]
@@ -211,7 +214,14 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
 
     with gr.Tab("AI Learning Center"):
         gr.Markdown("### Train the Agents")
-        train_btn = gr.Button("🚀 Start 300 Episode Training Run", variant="secondary")
+        gr.Markdown(
+            f"Each run trains for **{TRAIN_EPISODES} episodes** (see `TRAIN_EPISODES` in `app.py`). "
+            "If the button still shows an old number, hard-refresh the page or restart the Space so the latest commit is built."
+        )
+        train_btn = gr.Button(
+            f"🚀 Start {TRAIN_EPISODES} Episode Training Run",
+            variant="secondary",
+        )
         train_status_out = gr.Textbox(label="Status", value="Ready.")
         gr.Button("Refresh Status").click(fn=get_training_status, outputs=train_status_out)
         train_btn.click(fn=start_training_ui, outputs=train_status_out)
