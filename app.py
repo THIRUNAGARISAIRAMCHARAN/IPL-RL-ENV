@@ -10,7 +10,7 @@ from training.train import run_training
 
 def _start_training():
     try:
-        run_training(episodes=200)
+        run_training(episodes=300)
     except Exception as e:
         print(f"Training error: {e}", flush=True)
 
@@ -145,23 +145,23 @@ def run_demo_auction():
     )
 
 def start_training_ui():
-    episodes = 200
+    episodes = 300
     if training_status["ongoing"]:
         return "Training is already running."
     
     def worker():
         training_status["ongoing"] = True
-        training_status["msg"] = "Learning (200 episodes)..."
+        training_status["msg"] = "Learning (300 episodes)..."
         try:
-            run_training(episodes=200)
-            training_status["msg"] = "Done! 200 episodes completed."
+            run_training(episodes=300)
+            training_status["msg"] = "Done! 300 episodes completed."
         except Exception as e:
             training_status["msg"] = f"Stopped: {str(e)}"
         finally:
             training_status["ongoing"] = False
 
     threading.Thread(target=worker).start()
-    return "Started 200-episode training in the background."
+    return "Started 300-episode training in the background."
 
 def get_training_status():
     return training_status["msg"]
@@ -211,7 +211,7 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
 
     with gr.Tab("AI Learning Center"):
         gr.Markdown("### Train the Agents")
-        train_btn = gr.Button("🚀 Start 200 Episode Training Run", variant="secondary")
+        train_btn = gr.Button("🚀 Start 300 Episode Training Run", variant="secondary")
         train_status_out = gr.Textbox(label="Status", value="Ready.")
         gr.Button("Refresh Status").click(fn=get_training_status, outputs=train_status_out)
         train_btn.click(fn=start_training_ui, outputs=train_status_out)

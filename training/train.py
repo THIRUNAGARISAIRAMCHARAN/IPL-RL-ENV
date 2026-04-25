@@ -318,7 +318,7 @@ def _pct_improvement(first: float, last_10: float) -> str:
     return f"{(last_10 - first) / abs(first) * 100.0:+.0f}%"
 
 
-def run_training(episodes: int = 200) -> None:
+def run_training(episodes: int = 300) -> None:
     episodes = max(1, int(episodes))
     print(f"Dataset: {episodes} episodes")
 
@@ -460,7 +460,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--episodes",
         type=int,
-        default=200,
+        default=300,
         help="Number of training episodes.",
     )
     args = parser.parse_args()
