@@ -19,14 +19,14 @@ Learning is shaped by dense, interpretable rewards: `value_pick`, `synergy`, `la
 Before training, agents routinely panic-bid on marquee players, overpaid above intrinsic value, and entered the season with weak role coverage.
 
 After tracked runs, current logged insights from `emergent_insights.json` are:
-- `reward_improvement_pct`: 0.0
-- `win_rate_improvement_pct`: 0.0
-- `budget_efficiency_improvement_pct`: 0.0
+- `reward_improvement_pct`: 2693.29
+- `win_rate_improvement_pct`: 28.25
+- `budget_efficiency_improvement_pct`: 100.0
 
 These values indicate baseline/noisy initial runs and provide a clean checkpoint before longer training. As episodes accumulate, this section will be replaced with behavior-shift narratives from emergent insights.
 
 ## Results
-Reward +0.0%  |  Win Rate +0.0%  |  Budget Efficiency +0.0%
+Reward +2693.29%  |  Win Rate +28.25%  |  Budget Efficiency +100.0%
 
 [EMBED reward_curve.png HERE after onsite training]
 

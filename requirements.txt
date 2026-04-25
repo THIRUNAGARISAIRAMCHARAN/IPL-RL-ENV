@@ -1,6 +1,8 @@
 openenv
 gradio>=4.0.0
 streamlit
+python-docx
+matplotlib
 numpy
 pandas
 plotly
