@@ -2,8 +2,10 @@ import gradio as gr
 import json
 import os
 import pandas as pd
+import threading
 from env.ipl_env import IPLAuctionEnv
 from agents.base_agent import BaseIPLAgent
+from training.train import run_training
 
 TEAM_NAMES = ["MI", "CSK", "RCB", "KKR", "DC", "RR", "PBKS", "SRH"]
 PERSONALITIES = [
@@ -17,6 +19,8 @@ PERSONALITIES = [
     "role_filler",
 ]
 
+# Global status for training
+training_status = {"ongoing": False, "msg": "Ready to learn."}
 
 def run_demo_auction():
     env = IPLAuctionEnv()
@@ -125,11 +129,32 @@ def run_demo_auction():
         transfer_text
     )
 
+def start_training_ui(episodes):
+    if training_status["ongoing"]:
+        return "Training is already in progress in the background."
+    
+    def worker():
+        training_status["ongoing"] = True
+        training_status["msg"] = f"Learning... (Target: {episodes} episodes)"
+        try:
+            run_training(episodes=int(episodes))
+            training_status["msg"] = f"Success! Completed {episodes} episodes. Refresh logs to see results."
+        except Exception as e:
+            training_status["msg"] = f"Early stop or Error: {str(e)}"
+        finally:
+            training_status["ongoing"] = False
+
+    thread = threading.Thread(target=worker)
+    thread.start()
+    return "Training started! You can check the 'Training Metrics' tab in a few minutes to see progress. The simulation will continue to work while training runs."
+
+def get_training_status():
+    return training_status["msg"]
 
 def load_results():
     try:
         if not os.path.exists("training/logs/reward_curve.json"):
-            return "No training data yet. Run train.py first."
+            return "No training data yet. Pull from Hub or start training."
         with open("training/logs/reward_curve.json", "r", encoding="utf-8") as f:
             data = json.load(f)
         teams = data.get("teams", {})
@@ -140,9 +165,9 @@ def load_results():
                 window = rewards[-10:] if len(rewards) >= 10 else rewards
                 avg = sum(window) / max(1, len(window))
                 lines.append(f"{team}: Avg Reward (last 10 eps) = {avg:.1f}")
-        return "\n".join(lines) or "No training data yet. Run train.py first."
+        return "\n".join(lines) or "No training data yet. Pull from Hub or start training."
     except Exception:
-        return "No training data yet. Run train.py first."
+        return "No training data yet. Pull from Hub or start training."
 
 
 with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as demo:
@@ -175,6 +200,18 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
         
     with gr.Tab("Phase 3: Transfer Window"):
         transfer_out = gr.Markdown("No transfer activity logged yet.")
+
+    with gr.Tab("AI Learning Center"):
+        gr.Markdown("### Train the Agents (No Terminal Required)")
+        with gr.Row():
+            eps_input = gr.Slider(minimum=10, maximum=500, value=200, step=10, label="Episodes to Train")
+            train_btn = gr.Button("🚀 Start AI Learning Session", variant="secondary")
+        
+        train_status_out = gr.Textbox(label="Current Status", value="Ready.")
+        gr.Markdown("> **Note**: On Hugging Face, training 200 episodes takes ~20 minutes. You can refresh the 'Training Metrics' tab periodically to see rewards increasing.")
+        
+        train_btn.click(fn=start_training_ui, inputs=eps_input, outputs=train_status_out)
+        gr.Button("Check Progress").click(fn=get_training_status, outputs=train_status_out)
 
     with gr.Tab("Training Metrics"):
         gr.Markdown("### Reward Progression Across Episodes")
