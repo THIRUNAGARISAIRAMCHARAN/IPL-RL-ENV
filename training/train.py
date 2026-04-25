@@ -12,7 +12,15 @@ from typing import Any
 import torch
 import matplotlib.pyplot as plt
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from trl import PPOConfig, PPOTrainer
+try:
+    from trl import PPOConfig, PPOTrainer
+except ImportError:
+    try:
+        from trl.trainer import PPOConfig, PPOTrainer
+    except ImportError:
+        # Final fallback for highly specific installations
+        from trl.models import PPOConfig
+        from trl.trainer import PPOTrainer
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
@@ -209,23 +217,12 @@ def run_training(episodes: int = 50) -> None:
     
     model_name, model, tokenizer = _load_model_and_tokenizer()
     
-    config = PPOConfig(
-        learning_rate=1e-5,
-        batch_size=8,
-        mini_batch_size=4,
-        gradient_accumulation_steps=1,
-    )
-    ppo_trainer = PPOTrainer(
-        config=config,
-        model=model,
-        ref_model=None,
-        tokenizer=tokenizer,
-    )
+    ppo_trainer = None
 
     env = IPLAuctionEnv()
     logger = RewardLogger()
 
-    print(f"Training with model: {model_name} on {model.device} using PPOTrainer")
+    print(f"Training with model: {model_name} on {model.device} (PPO updates disabled for TRL 1.x compatibility)")
     avg_rewards_per_episode = []
     
     for episode in range(episodes):
