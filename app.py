@@ -49,12 +49,18 @@ def run_demo_auction():
             winner = TEAM_NAMES[int(lot["winner"])] if str(lot["winner"]).isdigit() else str(lot["winner"])
             log.append(f"{lot['player_name']} -> {winner} @ Rs.{lot['price']:.1f}Cr")
 
-    # Squads
+    # Full Squads Table
     squads = last_info.get("final_squads", env.team_squads)
-    squad_text = ""
+    squad_list = []
     for tid, squad in squads.items():
-        names = ", ".join([p["name"] for p in squad[:5]])
-        squad_text += f"**{str(tid)}**: {names}...\n"
+        for p in squad:
+            squad_list.append([
+                tid,
+                p.get("name", "Unknown"),
+                p.get("role", "N/A"),
+                f"Rs.{p.get('price', 0):.1f}Cr"
+            ])
+    squads_df = pd.DataFrame(squad_list, columns=["Team", "Player", "Role", "Price"]).sort_values("Team")
 
     # Season Results
     results = env.last_season_results
@@ -86,7 +92,7 @@ def run_demo_auction():
 
     return (
         "\n".join(log[-30:]) if log else "No lot-close events captured.", 
-        squad_text,
+        squads_df,
         standings_df,
         champ_text,
         transfer_text
@@ -118,11 +124,11 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
     
     with gr.Tab("Phase 1: Auction"):
         with gr.Row():
-            with gr.Column(scale=2):
-                run_btn = gr.Button("Run Full Simulation Cycle", variant="primary")
-                auction_log = gr.Textbox(label="Live Auction Bidding (Last 30 Events)", lines=15)
             with gr.Column(scale=1):
-                squads_out = gr.Markdown(label="Final Squad Fragments")
+                run_btn = gr.Button("Run Full Simulation Cycle", variant="primary")
+                auction_log = gr.Textbox(label="Live Auction Bidding (Last 30 Events)", lines=10)
+            with gr.Column(scale=2):
+                squads_out = gr.Dataframe(label="Final Rosters (All Players)")
     
     with gr.Tab("Phase 2: Season results"):
         champ_out = gr.Markdown("### No simulation run yet.")
