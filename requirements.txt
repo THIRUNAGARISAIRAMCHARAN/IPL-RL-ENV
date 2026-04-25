@@ -1,5 +1,5 @@
 openenv
-gradio>=4.0.0
+gradio>=5.10.0
 streamlit
 python-docx
 matplotlib
