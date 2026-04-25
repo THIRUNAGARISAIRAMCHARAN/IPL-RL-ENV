@@ -131,6 +131,7 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
                 squads_out = gr.Dataframe(label="Final Rosters (All Players)")
     
     with gr.Tab("Phase 2: Season results"):
+        gr.Markdown("### Simulate 56 matches, playoffs, and crown a champion")
         champ_out = gr.Markdown("### No simulation run yet.")
         standings_out = gr.Dataframe(label="Final League Table (14 matches each)")
         
@@ -148,7 +149,7 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
         This environment tests **Long-Horizon Planning** and **Multi-Agent Interaction**. 
         
         - **Phase 1: Auction** — Agents bid for 200 players with hidden stats and noisy budget tracking.
-        - **Phase 2: Season** — Roster quality is tested across a 56-match simulated league.
+        - **Phase 2: Season** — Simulate 56 matches, playoffs, and crown a champion.
         - **Phase 3: Transfer** — Agents attempt mid-season recovery through strategic trades.
         
         Built using the **OpenEnv** framework for high-fidelity RL orchestration.
