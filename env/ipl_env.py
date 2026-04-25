@@ -145,7 +145,14 @@ class IPLAuctionEnv(BaseEnvironment):
         assert self.auction_engine is not None
         squads = {}
         for team_id, state in self.auction_engine.team_states.items():
-            squads[team_id] = [self._player_from_id(pid) for pid in state["squad"]]
+            team_squad = []
+            for item in state["squad"]:
+                player_id = item["id"] if isinstance(item, dict) else item
+                price = item["price"] if isinstance(item, dict) else 0.0
+                player_data = self._player_from_id(player_id).copy()
+                player_data["price"] = price
+                team_squad.append(player_data)
+            squads[team_id] = team_squad
         return squads
 
     def _build_transfer_teams(self) -> list[dict[str, Any]]:

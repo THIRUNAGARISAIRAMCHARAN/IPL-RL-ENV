@@ -92,7 +92,8 @@ class AuctionEngine:
 
     def _role_counts_for_team(self, team_id: str) -> dict[str, int]:
         counts = {"BAT": 0, "BOWL": 0, "AR": 0, "WK": 0}
-        for pid in self.team_states[team_id]["squad"]:
+        for item in self.team_states[team_id]["squad"]:
+            pid = item["id"] if isinstance(item, dict) else item
             role = self.players_by_id[pid]["role"]
             counts[role] += 1
         return counts
@@ -140,7 +141,8 @@ class AuctionEngine:
         budget_pressure = own_state["budget"] / max(1.0, players_needed + 1.0)
 
         own_squad = []
-        for pid in own_state["squad"]:
+        for item in own_state["squad"]:
+            pid = item["id"] if isinstance(item, dict) else item
             player = self.players_by_id[pid]
             own_squad.append({"id": pid, "role": player["role"]})
 
@@ -283,7 +285,7 @@ class AuctionEngine:
             )
         else:
             state["budget"] = round(state["budget"] - final_price, 2)
-            state["squad"].append(player_id)
+            state["squad"].append({"id": player_id, "price": final_price})
             self.auction_log.append(
                 {
                     "event": "sold",
