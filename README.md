@@ -1,6 +1,6 @@
 ---
 title: IPL RL Auction Environment
-emoji: IPL
+emoji: 🏏
 colorFrom: blue
 colorTo: indigo
 sdk: gradio
