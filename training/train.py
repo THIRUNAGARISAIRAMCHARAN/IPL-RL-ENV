@@ -166,45 +166,6 @@ def _budget_efficiency(rows: dict[str, dict[str, Any]]) -> float:
     return 100.0 * (mean(effs) if effs else 0.0)
 
 
-def _parse_rewards_history(csv_path: Path) -> tuple[np.ndarray, dict[str, int], int, float | None, float | None]:  # noqa: UP
-    if not csv_path.is_file() or csv_path.stat().st_size < 2:
-        return (
-            np.array([]),
-            {t: 0 for t in TEAM_NAMES},
-            0,
-            None,
-            None,
-        )
-    try:
-        df = pd.read_csv(csv_path)
-    except Exception:  # noqa: BLE001
-        return np.array([]), {t: 0 for t in TEAM_NAMES}, 0, None, None
-    if df.empty or "episode" not in df.columns or "TOTAL" not in df.columns:
-        return np.array([]), {t: 0 for t in TEAM_NAMES}, 0, None, None
-    champs: dict[str, int] = {t: 0 for t in TEAM_NAMES}
-    for _, g in df.groupby("episode", sort=True):
-        try:
-            w = g.loc[g["TOTAL"].idxmax()]["team_id"]
-            w = str(w)
-            if w in champs:
-                champs[w] += 1
-        except Exception:  # noqa: BLE001
-            continue
-    by = df.groupby("episode", sort=True)["TOTAL"].mean()
-    if len(by) == 0:
-        return np.array([]), champs, 0, None, None
-    best_idx = by.values.argmax()
-    best_ep = int(by.index[best_idx])
-    best_val = float(by.values[best_idx])
-    return (
-        by.values,
-        champs,
-        int(by.index.max()),
-        best_ep,
-        best_val,
-    )
-
-
 def _fmt_hms(secs: float) -> str:
     s = int(max(0, round(secs)))
     h, r = divmod(s, 3600)
@@ -243,12 +204,13 @@ def run_episode(
     env: IPLAuctionEnv,
     ep_num: int,
     logger: RewardLogger,
-) -> dict[str, Any]:
+) -> tuple[list[float], dict[str, dict[str, Any]]]:
     if model is None or tokenizer is None:
-        return {"rows": {}, "avg": 0.0, "best_t": 0.0, "b_eff": 0.0, "champion": "MI"}
+        return [], {}
     dev = _device_for_model(model)
     obs = env.reset(episode=ep_num)
     done = False
+    all_rewards: list[float] = []
 
     while not done:
         o0 = obs[TEAM_NAMES[0]]
@@ -283,6 +245,7 @@ def run_episode(
             response_tensors = []
 
         obs, rewards_dict, done, _info = env.step(actions)
+        all_rewards.extend(float(rewards_dict.get(team, 0.0)) for team in TEAM_NAMES)
         if ppo_trainer is not None and phase == "auction" and query_tensors:
             try:
                 rts = [torch.tensor(float(rewards_dict.get(TEAM_NAMES[i], 0.0))) for i in range(8)]
@@ -311,13 +274,8 @@ def run_episode(
         write_reward_rows=False,
         update_reward_curve=up_curve,
     )
-    return {
-        "rows": rows,
-        "avg": av,
-        "best_t": bt,
-        "b_eff": b_eff,
-        "champion": champ,
-    }
+    del av, bt, champ, b_eff
+    return all_rewards, rows
 
 
 def _ep_mean(rows: dict[str, dict[str, Any]]) -> float:
@@ -361,17 +319,12 @@ def _pct_improvement(first: float, last_10: float) -> str:
 
 
 def run_training(episodes: int = 200) -> None:
-    n_planned = max(1, int(episodes))
-    print(f"Dataset: {n_planned} episodes")
+    episodes = max(1, int(episodes))
+    print(f"Dataset: {episodes} episodes")
 
     os.makedirs("training/logs", exist_ok=True)
     os.makedirs("checkpoints", exist_ok=True)
     RewardLogger()
-
-    hist, champs_hist, last_ep, _, _ = _parse_rewards_history(REWARD_CSV)
-    if len(hist) > 0:
-        print(f"Resuming from episode {last_ep + 1}...")
-    start_ep = (last_ep + 1) if len(hist) > 0 else 1
 
     loaded = _load_model_and_tokenizer()
     if not loaded:
@@ -402,13 +355,9 @@ def run_training(episodes: int = 200) -> None:
     env = IPLAuctionEnv()
     log = RewardLogger()
     t0 = time.time()
-    checkpoint_path = "checkpoints/last-checkpoint"
-    if os.path.exists(checkpoint_path):
-        print(f"Resuming from: ./{checkpoint_path}")
-
-    all_scores: list[float] = list(hist.tolist()) if len(hist) else []
-    champs: dict[str, int] = dict(champs_hist)
-    session_best = max(all_scores) if all_scores else float("-inf")
+    avg_rewards_per_episode: list[float] = []
+    champs: dict[str, int] = {t: 0 for t in TEAM_NAMES}
+    session_best = float("-inf")
 
     def print_ep_line(ep: int, av: float, best_s: float, b_eff: float) -> None:
         elapsed = time.time() - t0
@@ -424,20 +373,27 @@ def run_training(episodes: int = 200) -> None:
         print(line2)
 
     try:
-        for i in range(n_planned):
-            ep_num = start_ep + i
-            out = run_episode(model, tokenizer, ppo, env, ep_num, log)
-            if not out.get("rows"):
-                continue
-            av = float(out["avg"])
-            b_one = float(out["best_t"])
-            b_eff = float(out["b_eff"])
-            w = str(out.get("champion", "MI"))
+        for episode in range(episodes):
+            reward_list, rewards_rows = run_episode(model, tokenizer, ppo, env, episode, log)
+            avg_reward = mean(reward_list) if reward_list else 0.0
+            best_reward = max(reward_list) if reward_list else 0.0
+            avg_rewards_per_episode.append(avg_reward)
+
+            print(f"\n===== Episode {episode+1}/{episodes} =====")
+            print("--- Rewards ---")
+            for team in TEAM_NAMES:
+                row = rewards_rows.get(team, {})
+                r = float(row.get("TOTAL", 0.0))
+                print(f"  {team:<8}: {r:+.2f}")
+            print(f"  Avg Reward: {avg_reward:+.2f} | Best: {best_reward:+.2f}")
+
+            b_eff = _budget_efficiency(rewards_rows) if rewards_rows else 0.0
+            w = max(rewards_rows, key=lambda k: float(rewards_rows[k].get("TOTAL", 0.0))) if rewards_rows else "MI"
             if w in champs:
                 champs[w] += 1
 
-            if av > session_best + 1e-9:
-                session_best = av
+            if avg_reward > session_best + 1e-9:
+                session_best = avg_reward
                 print("New best reward! Saving checkpoint...")
                 _save_model_tokenizer(
                     model,
@@ -445,15 +401,14 @@ def run_training(episodes: int = 200) -> None:
                     Path(ROOT_DIR) / "checkpoints" / "best",
                 )
 
-            print_ep_line(ep_num, av, b_one, b_eff)
-            all_scores.append(av)
-            if ep_num % 10 == 0:
-                print_teams_block(out["rows"])
-            if ep_num > 0 and ep_num % 50 == 0:
-                d = Path(ROOT_DIR) / "checkpoints" / f"ep_{ep_num}"
+            print_ep_line(episode + 1, avg_reward, best_reward, b_eff)
+            if (episode + 1) % 10 == 0 and rewards_rows:
+                print_teams_block(rewards_rows)
+            if (episode + 1) % 50 == 0:
+                d = Path(ROOT_DIR) / "checkpoints" / f"ep_{episode + 1}"
                 _save_model_tokenizer(model, tokenizer, d)
 
-            _plateau_warning(all_scores)
+            _plateau_warning(avg_rewards_per_episode)
 
     except KeyboardInterrupt:  # noqa: BLE001
         _save_model_tokenizer(
@@ -467,7 +422,7 @@ def run_training(episodes: int = 200) -> None:
 
     total_t = time.time() - t0
     all_scores, best_v, best_ep, f_mean = _summary_from_csv()
-    n_eps = n_planned
+    n_eps = episodes
     first = float(all_scores[0]) if all_scores else 0.0
     impr = _pct_improvement(first, f_mean)
     champ = max(champs, key=champs.get) if champs and sum(champs.values()) else "MI"
