@@ -75,3 +75,34 @@ Experience the live auction logic interactively:
 - **Colab Notebook**: [Colab Demo (IPL_RL_Demo.ipynb)](https://colab.research.google.com/github/THIRUNAGARISAIRAMCHARAN/IPL-RL-ENV/blob/main/IPL_RL_Demo.ipynb)
 - **Blog post**: [Full Project Narrative (BLOG.md)](BLOG.md)
 - **Video**: [YouTube Demo](https://youtu.be/VIDEO_ID)
+
+## Run on HuggingFace Space (T4 Medium)
+Use these exact steps in order from project root:
+
+```powershell
+# 1) Clone and enter project
+git clone <your_repo_url>
+cd ipl_rl_env
+
+# 2) Create env vars file and fill your tokens
+copy .env.example .env
+
+# 3) Install dependencies
+pip install -r requirements.txt
+
+# 4) Export tokens for current shell
+$env:HF_TOKEN="<your_hf_token>"
+$env:WANDB_API_KEY="<your_wandb_key>"
+
+# 5) Train on T4 Medium (minimum 200 episodes enforced)
+python scripts/hf_train.py --episodes 500
+
+# 6) Generate reward curve artifact
+python scripts/generate_reward_curve.py
+
+# 7) Print learning proof metrics for BLOG.md
+python scripts/get_proof.py
+
+# 8) Push model + logs + reward_curve.png to Hub
+python scripts/push_to_hub.py --username <your_hf_username>
+```
