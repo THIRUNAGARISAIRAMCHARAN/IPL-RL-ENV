@@ -1,9 +1,14 @@
 import os
 import sys
 from huggingface_hub import login
-from training.train import run_training
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
 def main():
+    os.chdir(ROOT_DIR)
+
     # 1. Login using HF_TOKEN
     token = os.getenv("HF_TOKEN")
     if not token:
@@ -39,12 +44,16 @@ def main():
     parser.add_argument("--episodes", type=int, default=500, help="Number of episodes to train")
     args = parser.parse_args()
 
-    print(f"Starting Training (Target {args.episodes} episodes)...")
+    episodes = max(200, int(args.episodes))
+    print(f"Starting Training (Target {episodes} episodes)...")
+    run_training = None
     try:
-        run_training(episodes=args.episodes)
+        from training.train import run_training
+
+        run_training(episodes=episodes)
     except Exception as e:
         print(f"Training interrupted: {e}")
-        if args.episodes > 200:
+        if episodes > 200 and run_training is not None:
             print("Attempting to run with fallback settings (200 episodes)...")
             run_training(episodes=200)
 

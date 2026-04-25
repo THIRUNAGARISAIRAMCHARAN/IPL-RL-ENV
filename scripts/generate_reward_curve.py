@@ -22,8 +22,15 @@ def generate_plot():
         for team, metrics in teams.items():
             rewards = metrics.get("rewards", [])
             if rewards:
+                if episodes:
+                    n = min(len(episodes), len(rewards))
+                    x = episodes[:n]
+                    y = rewards[:n]
+                else:
+                    x = list(range(1, len(rewards) + 1))
+                    y = rewards
                 # Plot with markers for better visibility on small versions
-                plt.plot(episodes[:len(rewards)], rewards, label=team, linewidth=2)
+                plt.plot(x, y, label=team, linewidth=2)
 
         plt.title("IPL RL Training: Reward Progression by Team", fontsize=14)
         plt.xlabel("Episodes", fontsize=12)
