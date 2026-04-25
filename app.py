@@ -76,8 +76,32 @@ def run_demo_auction():
         ])
     standings_df = pd.DataFrame(standings_data, columns=["Rank", "Team", "Wins", "Losses", "NRR"]).sort_values("Rank")
     
+    # All 56 Matches
+    match_list = []
+    for i, m in enumerate(results.get("results", []), 1):
+        match_list.append([
+            f"M{i}",
+            f"{m['team_a']} vs {m['team_b']}",
+            m['winner'],
+            "Yes" if m.get("upset") else "No"
+        ])
+    matches_df = pd.DataFrame(match_list, columns=["Match ID", "Fixture", "Winner", "Upset"])
+
+    # Playoffs & Champion
+    bracket = results.get("bracket", {})
+    qualification_text = "### 🏁 Playoff Qualification\n"
+    top_4 = standings_df["Team"].tolist()[:4]
+    qualification_text += f"The top 4 teams qualified: **{', '.join(top_4)}**\n\n"
+    
+    bracket_text = "### 🏆 Playoff Brackets\n"
+    if bracket:
+        bracket_text += f"- **Qualifier 1**: {bracket['Q1']['winner']} defeated {bracket['Q1']['loser']}\n"
+        bracket_text += f"- **Eliminator**: {bracket['Eliminator']['winner']} defeated {bracket['Eliminator']['loser']}\n"
+        bracket_text += f"- **Qualifier 2**: {bracket['Q2']['winner']} defeated {bracket['Q2']['loser']}\n"
+        bracket_text += f"- **Grand Final**: {bracket['Final']['winner']} defeated {bracket['Final']['loser']}\n"
+    
     champion = results.get("champion", "N/A")
-    champ_text = f"## TOURNAMENT CHAMPION: {champion}"
+    champ_text = f"## FINAL WINNER: {champion}"
 
     # Transfer Activity
     transfer_results = last_info.get("transfer_results", {})
@@ -94,6 +118,9 @@ def run_demo_auction():
         "\n".join(log[-30:]) if log else "No lot-close events captured.", 
         squads_df,
         standings_df,
+        matches_df,
+        qualification_text,
+        bracket_text,
         champ_text,
         transfer_text
     )
@@ -132,8 +159,19 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
     
     with gr.Tab("Phase 2: Season results"):
         gr.Markdown("### Simulate 56 matches, playoffs, and crown a champion")
-        champ_out = gr.Markdown("### No simulation run yet.")
-        standings_out = gr.Dataframe(label="Final League Table (14 matches each)")
+        with gr.Row():
+            with gr.Column():
+                standings_out = gr.Dataframe(label="Final League Table (14 matches each)")
+            with gr.Column():
+                matches_out = gr.Dataframe(label="Full Season Match List (56 Matches)")
+        
+        with gr.Row():
+            with gr.Column():
+                qual_out = gr.Markdown("### Playoff Qualification")
+            with gr.Column():
+                bracket_out = gr.Markdown("### Playoff Road to Final")
+        
+        champ_out = gr.Markdown("## FINAL WINNER: No simulation run yet.")
         
     with gr.Tab("Phase 3: Transfer Window"):
         transfer_out = gr.Markdown("No transfer activity logged yet.")
@@ -157,7 +195,7 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
 
     run_btn.click(
         fn=run_demo_auction, 
-        outputs=[auction_log, squads_out, standings_out, champ_out, transfer_out]
+        outputs=[auction_log, squads_out, standings_out, matches_out, qual_out, bracket_out, champ_out, transfer_out]
     )
 
 if __name__ == "__main__":
