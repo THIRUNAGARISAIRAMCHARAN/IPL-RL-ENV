@@ -3,7 +3,6 @@ import json
 import os
 import pandas as pd
 import threading
-import sys
 from env.ipl_env import IPLAuctionEnv
 from agents.base_agent import BaseIPLAgent
 from training.train import run_training
@@ -14,15 +13,10 @@ def _start_training():
     except Exception as e:
         print(f"Training error: {e}", flush=True)
 
-# Only start once
-try:
-    import streamlit as st
-    _training_state = st.session_state
-except Exception:
-    _training_state = {}
-
-if "training_started" not in _training_state:
-    _training_state["training_started"] = True
+# Only start once per process (Gradio Space runtime)
+_training_started = False
+if not _training_started:
+    _training_started = True
     t = threading.Thread(target=_start_training, daemon=True)
     t.start()
 
