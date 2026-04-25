@@ -12,7 +12,6 @@ from typing import Any
 import torch
 import matplotlib.pyplot as plt
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from trl import PPOConfig, PPOTrainer
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
@@ -173,13 +172,13 @@ def run_episode(model, tokenizer, ppo_trainer, env, logger, ep_num, csv_path):
         obs, rewards_dict, done, info = env.step(actions)
         all_rewards.extend([float(rewards_dict.get(t, 0.0)) for t in TEAM_NAMES])
 
-        # Step PPO
-        reward_tensors = [torch.tensor(float(rewards_dict.get(t, 0.0))) for t in step_team_ids]
-        try:
-            ppo_trainer.step(query_tensors, response_tensors, reward_tensors)
-        except Exception as e:
-            # PPO step can silently fail if memory issues exist, or token length mismatch
-            pass
+        # PPO/GRPO updates are optional in this compatibility mode.
+        if ppo_trainer is not None:
+            reward_tensors = [torch.tensor(float(rewards_dict.get(t, 0.0))) for t in step_team_ids]
+            try:
+                ppo_trainer.step(query_tensors, response_tensors, reward_tensors)
+            except Exception:
+                pass
 
     rewards_rows = _build_reward_rows(env, ep_num)
     
@@ -209,23 +208,13 @@ def run_training(episodes: int = 50) -> None:
     
     model_name, model, tokenizer = _load_model_and_tokenizer()
     
-    config = PPOConfig(
-        learning_rate=1e-5,
-        batch_size=8,
-        mini_batch_size=4,
-        gradient_accumulation_steps=1,
-    )
-    ppo_trainer = PPOTrainer(
-        config=config,
-        model=model,
-        ref_model=None,
-        tokenizer=tokenizer,
-    )
+    # TRL 1.x compatibility: no PPO symbols are guaranteed.
+    ppo_trainer = None
 
     env = IPLAuctionEnv()
     logger = RewardLogger()
 
-    print(f"Training with model: {model_name} on {model.device} using PPOTrainer")
+    print(f"Training with model: {model_name} on {model.device} (PPO updates disabled for TRL 1.x compatibility)")
     avg_rewards_per_episode = []
     
     for episode in range(episodes):
