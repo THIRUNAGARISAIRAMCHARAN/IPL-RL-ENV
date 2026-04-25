@@ -1,22 +1,27 @@
-from __future__ import annotations
-
-import os
 import sys
+import os
 
+# Add root to path for imports
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
 from training.reward_logger import RewardLogger
 
-
-def main() -> None:
-    proof = RewardLogger().get_learning_proof()
-    print("Copy-paste for BLOG.md:")
-    print(f"Reward +{proof.get('reward_improvement_pct', 0):.2f}%")
-    print(f"Win Rate +{proof.get('win_rate_improvement_pct', 0):.2f}%")
-    print(f"Budget Efficiency +{proof.get('budget_efficiency_improvement_pct', 0):.2f}%")
-
+def main():
+    print("--- LEARNING PROOF DATA ---")
+    try:
+        logger = RewardLogger()
+        proof = logger.get_learning_proof()
+        
+        print("\nCopy the following into BLOG.md or PROJECT_REPORT.md:\n")
+        print("```json")
+        print(proof)
+        print("```")
+        
+    except Exception as e:
+        print(f"Error generating proof: {e}")
+        print("Make sure training/logs/rewards.csv exists.")
 
 if __name__ == "__main__":
     main()

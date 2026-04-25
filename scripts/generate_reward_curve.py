@@ -1,52 +1,42 @@
-from __future__ import annotations
-
 import json
-from pathlib import Path
-
+import os
 import matplotlib.pyplot as plt
 
+def generate_plot():
+    log_path = "training/logs/reward_curve.json"
+    output_path = "reward_curve.png"
 
-TEAM_ORDER = ["MI", "CSK", "RCB", "KKR", "DC", "RR", "PBKS", "SRH"]
+    if not os.path.exists(log_path):
+        print(f"Error: {log_path} not found.")
+        return
 
+    try:
+        with open(log_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        episodes = data.get("episodes", [])
+        teams = data.get("teams", {})
 
-def main() -> None:
-    root = Path(__file__).resolve().parents[1]
-    curve_path = root / "training" / "logs" / "reward_curve.json"
-    out_path = root / "reward_curve.png"
+        plt.figure(figsize=(12, 7))
+        
+        for team, metrics in teams.items():
+            rewards = metrics.get("rewards", [])
+            if rewards:
+                # Plot with markers for better visibility on small versions
+                plt.plot(episodes[:len(rewards)], rewards, label=team, linewidth=2)
 
-    if not curve_path.exists():
-        raise FileNotFoundError(f"Missing reward curve file: {curve_path}")
+        plt.title("IPL RL Training: Reward Progression by Team", fontsize=14)
+        plt.xlabel("Episodes", fontsize=12)
+        plt.ylabel("Team Reward", fontsize=12)
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.grid(True, linestyle='--', alpha=0.7)
+        plt.tight_layout()
 
-    data = json.loads(curve_path.read_text(encoding="utf-8"))
-    episodes = data.get("episodes", [])
-    teams = data.get("teams", {})
+        plt.savefig(output_path, dpi=150)
+        print(f"Reward curve saved to {output_path}")
 
-    plt.figure(figsize=(11, 6))
-    plotted = 0
-    for team in TEAM_ORDER:
-        series = teams.get(team, {}).get("rewards", [])
-        if not series:
-            continue
-        x = episodes[: len(series)] if episodes else list(range(1, len(series) + 1))
-        plt.plot(x, series, label=team)
-        plotted += 1
-
-    if plotted == 0:
-        # Keep a valid output artifact even with empty logs.
-        plt.text(0.5, 0.5, "No reward curve data yet", ha="center", va="center")
-        plt.xlim(0, 1)
-        plt.ylim(0, 1)
-
-    plt.title("IPL RL Reward Curves by Team")
-    plt.xlabel("Episode")
-    plt.ylabel("Reward")
-    plt.grid(True, alpha=0.25)
-    if plotted > 0:
-        plt.legend(ncol=4, fontsize=9)
-    plt.tight_layout()
-    plt.savefig(out_path, dpi=150)
-    print(f"Saved reward curve plot to {out_path}")
-
+    except Exception as e:
+        print(f"Failed to generate plot: {e}")
 
 if __name__ == "__main__":
-    main()
+    generate_plot()
