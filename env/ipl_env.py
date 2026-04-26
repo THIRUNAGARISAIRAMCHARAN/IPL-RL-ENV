@@ -117,7 +117,8 @@ class IPLAuctionEnv(BaseEnvironment):
 
     def __init__(self, num_teams=8, seed=None):
         self.num_teams = int(num_teams)
-        self.random = random.Random(seed if seed is not None else 42)
+        base_seed = seed if seed is not None else random.SystemRandom().randint(1, 10**9)
+        self.random = random.Random(base_seed)
         self.data_dir = Path(__file__).resolve().parents[1] / "data"
         self.players = json.loads((self.data_dir / "players.json").read_text(encoding="utf-8"))
         self.teams = json.loads((self.data_dir / "teams.json").read_text(encoding="utf-8"))
@@ -163,6 +164,58 @@ class IPLAuctionEnv(BaseEnvironment):
             teams.append({"id": tid, "budget_cr": self.auction_engine.team_states[tid]["budget"]})
         return teams
 
+    def _enforce_squad_limits(self, min_squad: int = 15, max_squad: int = 16) -> None:
+        """Backfill squads so each team ends auction with [min_squad, max_squad] players."""
+        assert self.auction_engine is not None
+
+        # Respect max cap first.
+        for state in self.auction_engine.team_states.values():
+            if len(state["squad"]) > max_squad:
+                state["squad"] = state["squad"][:max_squad]
+
+        sold_ids = {
+            int(item["id"] if isinstance(item, dict) else item)
+            for state in self.auction_engine.team_states.values()
+            for item in state["squad"]
+        }
+        available = [
+            p for p in self.players if int(p.get("id", -1)) not in sold_ids
+        ]
+        available.sort(key=lambda p: float(p.get("base_price_cr", 0.0)))
+
+        # Round-robin fill until every team reaches min squad size.
+        underfilled = True
+        while underfilled and available:
+            underfilled = False
+            for tid in self.TEAMS[: self.num_teams]:
+                state = self.auction_engine.team_states[str(tid)]
+                if len(state["squad"]) >= min_squad:
+                    continue
+                underfilled = True
+
+                pick_idx = None
+                pick_price = 0.0
+                for idx, player in enumerate(available):
+                    base = float(player.get("base_price_cr", 0.0))
+                    if base <= float(state["budget"]):
+                        pick_idx = idx
+                        pick_price = base
+                        break
+                if pick_idx is None:
+                    # Hard guarantee: allow free/discounted assignment when budget is exhausted.
+                    pick_idx = 0
+                    pick_price = min(float(state["budget"]), float(available[pick_idx].get("base_price_cr", 0.0)))
+                    pick_price = max(0.0, pick_price)
+
+                picked = available.pop(pick_idx)
+                state["squad"].append({"id": int(picked["id"]), "price": round(pick_price, 2)})
+                state["budget"] = round(max(0.0, float(state["budget"]) - pick_price), 2)
+
+        # Keep engine contract aligned with enforced min/max.
+        for state in self.auction_engine.team_states.values():
+            state["min_squad"] = min_squad
+            state["max_squad"] = max_squad
+
     def reset(self, episode: int | None = None) -> dict:
         if episode is not None:
             self.episode_idx = int(episode)
@@ -195,7 +248,10 @@ class IPLAuctionEnv(BaseEnvironment):
 
         self.auction_engine = AuctionEngine(self.players, self.teams[: self.num_teams], self.num_teams)
         self.team_squads = {tid: [] for tid in self.TEAMS[: self.num_teams]}
-        self.season_simulator = SeasonSimulator([{"id": tid, "squad": squad} for tid, squad in self.team_squads.items()])
+        self.season_simulator = SeasonSimulator(
+            [{"id": tid, "squad": squad} for tid, squad in self.team_squads.items()],
+            seed=self.random.randint(1, 10**9),
+        )
         self.transfer_market = TransferMarket(
             self._build_transfer_teams(),
             self.team_squads,
@@ -335,11 +391,12 @@ class IPLAuctionEnv(BaseEnvironment):
                 self.auction_engine.close_lot()
 
             if self.auction_engine.is_auction_complete():
+                self._enforce_squad_limits(min_squad=15, max_squad=16)
                 for team_id in self.TEAMS[: self.num_teams]:
                     obs = self.auction_engine.get_observation(team_id)
                     squad = self._build_team_squads().get(team_id, [])
                     budget_left = float(obs.get("own_budget", 0.0))
-                    waste_penalty = -10.0 if budget_left > 25.0 and len(squad) < 20 else 0.0
+                    waste_penalty = -10.0 if budget_left > 25.0 and len(squad) < 15 else 0.0
                     counts = self._role_counts(squad)
                     all_roles_filled = counts["WK"] >= 1 and counts["BAT"] >= 4 and counts["BOWL"] >= 4
                     balance_bonus = 15.0 if all_roles_filled else -5.0
@@ -364,7 +421,10 @@ class IPLAuctionEnv(BaseEnvironment):
                     )
                 self.team_squads = self._build_team_squads()
                 season_teams = [{"id": tid, "squad": squad} for tid, squad in self.team_squads.items()]
-                self.season_simulator = SeasonSimulator(season_teams)
+                self.season_simulator = SeasonSimulator(
+                    season_teams,
+                    seed=self.random.randint(1, 10**9),
+                )
                 self.transfer_market = TransferMarket(
                     self._build_transfer_teams(),
                     self.team_squads,

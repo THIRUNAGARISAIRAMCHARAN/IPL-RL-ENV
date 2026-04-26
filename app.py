@@ -30,11 +30,12 @@ PERSONALITIES = [
 
 
 def _empty_roster_df() -> pd.DataFrame:
-    return pd.DataFrame(columns=["Player", "Role", "Price"])
+    return pd.DataFrame(columns=["Player", "Role", "Price", "Team Spent (Cr)"])
 
 
 def _build_team_roster_df(squads: dict, team_id: str) -> pd.DataFrame:
     players = squads.get(team_id, [])
+    total_spent = sum(float(player.get("price", 0.0)) for player in players)
     rows = []
     for player in players:
         rows.append(
@@ -42,9 +43,25 @@ def _build_team_roster_df(squads: dict, team_id: str) -> pd.DataFrame:
                 "Player": player.get("name", "Unknown"),
                 "Role": player.get("role", "N/A"),
                 "Price": f"Rs.{float(player.get('price', 0.0)):.1f}Cr",
+                "Team Spent (Cr)": round(total_spent, 2),
             }
         )
-    return pd.DataFrame(rows, columns=["Player", "Role", "Price"]) if rows else _empty_roster_df()
+    return (
+        pd.DataFrame(rows, columns=["Player", "Role", "Price", "Team Spent (Cr)"])
+        if rows
+        else _empty_roster_df()
+    )
+
+
+def _team_label(raw_team_id: str) -> str:
+    raw = str(raw_team_id)
+    if raw in TEAM_NAMES:
+        return raw
+    if raw.isdigit():
+        idx = int(raw)
+        if 0 <= idx < len(TEAM_NAMES):
+            return TEAM_NAMES[idx]
+    return raw
 
 
 def _empty_figure(title: str, msg: str) -> go.Figure:
@@ -145,7 +162,7 @@ def run_demo_auction():
     for tid, data in standings.items():
         standings_data.append([
             data.get("rank", 8),
-            tid,
+            _team_label(tid),
             data.get("wins", 0),
             data.get("losses", 0),
             round(data.get("nrr", 0.0), 2)
@@ -159,20 +176,84 @@ def run_demo_auction():
     # All 56 Matches
     match_list = []
     for i, m in enumerate(results.get("results", []), 1):
+        team_a = _team_label(m.get("team_a", ""))
+        team_b = _team_label(m.get("team_b", ""))
+        winner = _team_label(m.get("winner", ""))
+        toss_winner = _team_label(m.get("toss_winner", ""))
+        toss_decision = str(m.get("toss_decision", "-"))
+        xi_a = ", ".join(m.get("team_a_xi", [])[:11])
+        xi_b = ", ".join(m.get("team_b_xi", [])[:11])
         match_list.append([
             f"M{i}",
-            f"{m['team_a']} vs {m['team_b']}",
-            m['winner'],
+            f"{team_a} vs {team_b}",
+            winner,
+            toss_winner,
+            toss_decision,
             "Yes" if m.get("upset") else "No"
+            ,
+            xi_a,
+            xi_b,
         ])
     matches_df = (
-        pd.DataFrame(match_list, columns=["Match ID", "Fixture", "Winner", "Upset"])
+        pd.DataFrame(
+            match_list,
+            columns=[
+                "Match ID",
+                "Fixture",
+                "Winner",
+                "Toss Winner",
+                "Toss Decision",
+                "Upset",
+                "Team A Playing XI",
+                "Team B Playing XI",
+            ],
+        )
         if match_list
-        else pd.DataFrame(columns=["Match ID", "Fixture", "Winner", "Upset"])
+        else pd.DataFrame(
+            columns=[
+                "Match ID",
+                "Fixture",
+                "Winner",
+                "Toss Winner",
+                "Toss Decision",
+                "Upset",
+                "Team A Playing XI",
+                "Team B Playing XI",
+            ]
+        )
+    )
+
+    # Playoff matches table (Q1, Eliminator, Q2, Final)
+    bracket = results.get("bracket", {})
+    playoffs_rows = []
+    for stage in ["Q1", "Eliminator", "Q2", "Final"]:
+        stage_data = bracket.get(stage, {})
+        if not isinstance(stage_data, dict):
+            continue
+        p_team_a = _team_label(stage_data.get("team_a", ""))
+        p_team_b = _team_label(stage_data.get("team_b", ""))
+        p_winner = _team_label(stage_data.get("winner", ""))
+        p_toss_winner = _team_label(stage_data.get("toss_winner", ""))
+        p_toss_decision = str(stage_data.get("toss_decision", "-"))
+        playoffs_rows.append(
+            [
+                stage,
+                f"{p_team_a} vs {p_team_b}",
+                p_winner,
+                p_toss_winner,
+                p_toss_decision,
+            ]
+        )
+    playoffs_df = (
+        pd.DataFrame(
+            playoffs_rows,
+            columns=["Playoff Match", "Fixture", "Winner", "Toss Winner", "Toss Decision"],
+        )
+        if playoffs_rows
+        else pd.DataFrame(columns=["Playoff Match", "Fixture", "Winner", "Toss Winner", "Toss Decision"])
     )
 
     # Playoffs & Champion
-    bracket = results.get("bracket", {})
     qualification_text = "### 🏁 Playoff Qualification\n"
     top_4 = standings_df["Team"].tolist()[:4] if not standings_df.empty else []
     qualification_text += f"The top 4 teams qualified: **{', '.join(top_4)}**\n\n"
@@ -181,10 +262,12 @@ def run_demo_auction():
     if bracket:
         for phase in ["Q1", "Eliminator", "Q2", "Final"]:
             if phase in bracket:
-                bracket_text += f"- **{phase}**: {bracket[phase]['winner']} defeated {bracket[phase]['loser']}\n"
+                w = _team_label(bracket[phase].get("winner", ""))
+                l = _team_label(bracket[phase].get("loser", ""))
+                bracket_text += f"- **{phase}**: {w} defeated {l}\n"
     
     champion = results.get("champion", "N/A")
-    champ_text = f"## FINAL WINNER: {champion}"
+    champ_text = f"## FINAL WINNER: {_team_label(champion)}"
 
     # Transfer Activity
     transfer_results = last_info.get("transfer_results", {})
@@ -201,6 +284,7 @@ def run_demo_auction():
         *team_roster_dfs,
         standings_df,
         matches_df,
+        playoffs_df,
         qualification_text,
         bracket_text,
         champ_text,
@@ -308,10 +392,11 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
                                 team_roster_outputs.append(table)
     
     with gr.Tab("Phase 2: Season"):
-        gr.Markdown("### Simulate 56 matches, playoffs, and crown a champion")
+        gr.Markdown("### Season Results: 56 league matches + playoffs")
         with gr.Row():
             standings_out = gr.Dataframe(label="Standings")
-            matches_out = gr.Dataframe(label="Match Results")
+        matches_out = gr.Dataframe(label="All 56 Match Results + Playing XI")
+        playoffs_out = gr.Dataframe(label="Playoffs (4 Matches) with Toss Details")
         with gr.Row():
             qual_out = gr.Markdown("### Qualification")
             bracket_out = gr.Markdown("### Playoffs")
@@ -335,14 +420,12 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
     with gr.Tab("About"):
         gr.Markdown(
             """
-### IPL Multi-Agent RL Auction Environment
+### Results View
 
-- Simulates a full IPL pipeline: **auction -> season (56 matches) -> transfers**.
-- Uses 8 team agents with different auction personalities.
-- Shows team-wise final rosters, standings, fixtures, playoffs, and champion.
-- Training Metrics tab visualizes reward, win-rate, budget-efficiency, and behavior trends.
-
-Use **Run Full Simulation Cycle** in Phase 1 to refresh all downstream tabs.
+- Phase 1: Final team rosters with spend.
+- Phase 2: Full league and playoff results with toss outcomes.
+- Phase 3: Transfer outcomes.
+- Training Metrics: performance result graphs.
 """
         )
 
@@ -352,11 +435,16 @@ Use **Run Full Simulation Cycle** in Phase 1 to refresh all downstream tabs.
             *team_roster_outputs,
             standings_out,
             matches_out,
+            playoffs_out,
             qual_out,
             bracket_out,
             champ_out,
             transfer_out,
         ],
+    )
+    demo.load(
+        fn=load_training_metrics,
+        outputs=[results_out, reward_plot, win_plot, budget_plot, behavior_plot, proof_out],
     )
 
 if __name__ == "__main__":

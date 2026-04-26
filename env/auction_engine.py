@@ -19,7 +19,7 @@ class AuctionEngine:
             self.rng = num_teams
             self.num_teams = len(teams)
         else:
-            self.rng = random.Random(42)
+            self.rng = random.Random()
             self.num_teams = int(num_teams)
 
         self.players = players
@@ -52,8 +52,8 @@ class AuctionEngine:
             self.team_states[team_id] = {
                 "budget": float(team.get("budget_cr", 90)),
                 "squad": [],
-                "max_squad": 25,
-                "min_squad": 11,
+                "max_squad": 16,
+                "min_squad": 15,
             }
             self.bluff_history[team_id] = []
             self.flags[team_id] = {"DESPERATION": False}

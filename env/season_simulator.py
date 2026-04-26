@@ -6,17 +6,17 @@ from typing import Any
 
 
 class SeasonSimulator:
-    def __init__(self, teams_with_squads):
+    def __init__(self, teams_with_squads, seed: int | None = None):
         # Backward compatibility for existing code path:
         # SeasonSimulator(players, rng) -> squads can be set later in run_round.
         if isinstance(teams_with_squads, list) and teams_with_squads and "role" in teams_with_squads[0]:
             self.players_by_id = {p["id"]: p for p in teams_with_squads}
             self.teams: dict[str, dict[str, Any]] = {}
-            self.rng = random.Random(42)
+            self.rng = random.Random(seed if seed is not None else 42)
         else:
             self.players_by_id = {}
             self.teams = self._normalize_teams(teams_with_squads)
-            self.rng = random.Random(42)
+            self.rng = random.Random(seed if seed is not None else 42)
             for team in self.teams.values():
                 for player in team["squad"]:
                     self.players_by_id[player["id"]] = player
@@ -116,25 +116,86 @@ class SeasonSimulator:
         # return strength float in 0.5-2.0 range
         return max(0.5, min(2.0, round(strength, 4)))
 
+    def _player_rating(self, player: dict[str, Any]) -> float:
+        stats = player.get("visible_stats", {})
+        bat = float(stats.get("batting_avg", 0.0)) * (float(stats.get("strike_rate", 0.0)) / 100.0)
+        bowl = float(stats.get("wickets_per_match", 0.0)) / max(0.01, float(stats.get("bowling_economy", 10.0)))
+        # Mild role prior so XI composition remains realistic.
+        role_boost = {"WK": 1.05, "BAT": 1.0, "AR": 1.08, "BOWL": 1.0}.get(str(player.get("role", "")), 1.0)
+        return (0.65 * bat + 35.0 * bowl) * role_boost
+
+    def _select_playing_xi(self, squad: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        if len(squad) <= 11:
+            return list(squad)
+
+        by_role: dict[str, list[dict[str, Any]]] = {"WK": [], "BAT": [], "AR": [], "BOWL": []}
+        for player in squad:
+            role = str(player.get("role", "BAT"))
+            by_role.setdefault(role, []).append(player)
+
+        for role_players in by_role.values():
+            role_players.sort(key=self._player_rating, reverse=True)
+
+        xi: list[dict[str, Any]] = []
+        # Core constraints for a plausible XI.
+        xi.extend(by_role.get("WK", [])[:1])
+        xi.extend(by_role.get("BAT", [])[:4])
+        xi.extend(by_role.get("BOWL", [])[:3])
+
+        # Fill remaining slots with best available players not already selected.
+        selected_ids = {int(p.get("id", -1)) for p in xi}
+        pool = sorted(squad, key=self._player_rating, reverse=True)
+        for player in pool:
+            pid = int(player.get("id", -1))
+            if pid in selected_ids:
+                continue
+            xi.append(player)
+            selected_ids.add(pid)
+            if len(xi) >= 11:
+                break
+
+        return xi[:11]
+
     def simulate_match(self, team_a_id, team_b_id):
         team_a = self.teams[str(team_a_id)]
         team_b = self.teams[str(team_b_id)]
 
-        base_a = self.compute_team_strength(team_a["squad"])
-        base_b = self.compute_team_strength(team_b["squad"])
+        xi_a = self._select_playing_xi(team_a["squad"])
+        xi_b = self._select_playing_xi(team_b["squad"])
 
-        # Match-day noise: multiply each strength by random.uniform(0.88, 1.12)
-        sa = round(base_a * self.rng.uniform(0.88, 1.12), 4)
-        sb = round(base_b * self.rng.uniform(0.88, 1.12), 4)
+        toss_winner = str(team_a_id) if self.rng.random() < 0.5 else str(team_b_id)
+        toss_decision = "BAT" if self.rng.random() < 0.5 else "BOWL"
 
-        winner = str(team_a_id) if sa >= sb else str(team_b_id)
+        base_a = self.compute_team_strength(xi_a)
+        base_b = self.compute_team_strength(xi_b)
+
+        # Match-day variance + toss effect to prevent one-team lock-in.
+        toss_adv_a = 1.03 if self.rng.random() < 0.5 else 0.97
+        toss_adv_b = 2.0 - toss_adv_a
+        sa = round(base_a * self.rng.uniform(0.80, 1.20) * toss_adv_a, 4)
+        sb = round(base_b * self.rng.uniform(0.80, 1.20) * toss_adv_b, 4)
+
+        if abs(sa - sb) < 1e-6:
+            winner = str(team_a_id) if self.rng.random() < 0.5 else str(team_b_id)
+        else:
+            winner = str(team_a_id) if sa > sb else str(team_b_id)
         loser = str(team_b_id) if winner == str(team_a_id) else str(team_a_id)
 
         # Track upsets: lower-strength team wins
         weaker_team = str(team_a_id) if base_a < base_b else str(team_b_id)
         upset = winner == weaker_team and base_a != base_b
 
-        return {"winner": winner, "loser": loser, "sa": sa, "sb": sb, "upset": upset}
+        return {
+            "winner": winner,
+            "loser": loser,
+            "sa": sa,
+            "sb": sb,
+            "upset": upset,
+            "toss_winner": toss_winner,
+            "toss_decision": toss_decision,
+            "team_a_xi": [str(p.get("name", p.get("id", "?"))) for p in xi_a],
+            "team_b_xi": [str(p.get("name", p.get("id", "?"))) for p in xi_b],
+        }
 
     def run_season(self):
         standings: dict[str, dict[str, Any]] = {
@@ -170,11 +231,19 @@ class SeasonSimulator:
     def run_playoffs(self, top_4):
         # Q1: 1st vs 2nd | Eliminator: 3rd vs 4th
         q1 = self.simulate_match(top_4[0], top_4[1])
+        q1["team_a"] = top_4[0]
+        q1["team_b"] = top_4[1]
         eliminator = self.simulate_match(top_4[2], top_4[3])
+        eliminator["team_a"] = top_4[2]
+        eliminator["team_b"] = top_4[3]
 
         # Q2: loser(Q1) vs winner(Elim) | Final: winner(Q1) vs winner(Q2)
         q2 = self.simulate_match(q1["loser"], eliminator["winner"])
+        q2["team_a"] = q1["loser"]
+        q2["team_b"] = eliminator["winner"]
         final = self.simulate_match(q1["winner"], q2["winner"])
+        final["team_a"] = q1["winner"]
+        final["team_b"] = q2["winner"]
         champion_team_id = final["winner"]
 
         self.last_bracket = {
