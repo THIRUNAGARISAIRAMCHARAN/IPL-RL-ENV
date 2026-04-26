@@ -119,7 +119,6 @@ def run_demo_auction():
 
     obs = env.reset()
     done = False
-    log = []
     last_info = {}
 
     while not done:
@@ -134,10 +133,6 @@ def run_demo_auction():
         obs, rewards, done, info = env.step(actions)
         del rewards
         last_info = info
-        if "lot_closed" in info:
-            lot = info["lot_closed"]
-            winner = TEAM_NAMES[int(lot["winner"])] if str(lot["winner"]).isdigit() else str(lot["winner"])
-            log.append(f"{lot['player_name']} -> {winner} @ Rs.{lot['price']:.1f}Cr")
 
     # Full Squads Table
     squads = last_info.get("final_squads", env.team_squads)
@@ -203,7 +198,6 @@ def run_demo_auction():
         transfer_text += "No trades were executed in this window."
 
     return (
-        "\n".join(log[-30:]) if log else "No events.", 
         *team_roster_dfs,
         standings_df,
         matches_df,
@@ -299,7 +293,10 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
         with gr.Row():
             with gr.Column(scale=1):
                 run_btn = gr.Button("Run Full Simulation Cycle", variant="primary")
-                auction_log = gr.Textbox(label="Live Log", lines=10)
+                gr.Markdown(
+                    "Run the full cycle to populate team-wise final rosters, season table, "
+                    "all 56 match results, playoffs, and transfer summary."
+                )
             with gr.Column(scale=2):
                 gr.Markdown("### Final Rosters (Team-wise)")
                 team_roster_outputs = []
@@ -336,12 +333,22 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
         )
 
     with gr.Tab("About"):
-        gr.Markdown("Environment for Multi-Agent IPL Auction RL.")
+        gr.Markdown(
+            """
+### IPL Multi-Agent RL Auction Environment
+
+- Simulates a full IPL pipeline: **auction -> season (56 matches) -> transfers**.
+- Uses 8 team agents with different auction personalities.
+- Shows team-wise final rosters, standings, fixtures, playoffs, and champion.
+- Training Metrics tab visualizes reward, win-rate, budget-efficiency, and behavior trends.
+
+Use **Run Full Simulation Cycle** in Phase 1 to refresh all downstream tabs.
+"""
+        )
 
     run_btn.click(
         fn=run_demo_auction, 
         outputs=[
-            auction_log,
             *team_roster_outputs,
             standings_out,
             matches_out,
