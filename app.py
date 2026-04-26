@@ -11,12 +11,11 @@ import sys
 sys.stdout.reconfigure(line_buffering=True)
 sys.stderr.reconfigure(line_buffering=True)
 
-
 def _start_training():
     try:
         print("===== Training Thread Started =====", flush=True)
         from training.train import run_training
-        run_training(episodes=100)
+        run_training(episodes=50)
         print("===== Training Complete =====", flush=True)
     except Exception as e:
         import traceback
@@ -48,6 +47,39 @@ PERSONALITIES = [
     "balanced",
     "role_filler",
 ]
+
+
+def load_and_display_score():
+    try:
+        with open("training/logs/gradio_score.json", "r") as f:
+            data = json.load(f)
+        score = data.get("gradio_score", 0)
+        avg = data.get("avg_reward", 0)
+        total = data.get("total_episodes", 0)
+        # Use HTML so score denominator and body stay high-contrast (theme was washing out Markdown).
+        return (
+            f'<div class="ipl-lb-score">🏆 Score: <span class="ipl-lb-score-num">{score}</span> / <span class="ipl-lb-score-den">100</span></div>',
+            "<div class='ipl-lb-details'>"
+            f"<p><strong>Average Reward:</strong> {avg:.4f}</p>"
+            f"<p><strong>Total Episodes:</strong> {total}</p>"
+            f"<p><strong>Model:</strong> Qwen/Qwen2.5-0.5B-Instruct</p>"
+            "</div>",
+        )
+    except Exception:
+        return (
+            '<div class="ipl-lb-score">Score: Not yet available</div>',
+            '<div class="ipl-lb-details">Training not complete yet. Please wait.</div>',
+        )
+
+
+def load_before_after_curve():
+    p = "training/logs/before_after_reward_curve.png"
+    return p if os.path.isfile(p) else None
+
+
+def _load_leaderboard_ui():
+    s1, s2 = load_and_display_score()
+    return s1, s2, load_before_after_curve()
 
 
 def _empty_roster_df() -> pd.DataFrame:
@@ -102,7 +134,7 @@ def _empty_figure(title: str, msg: str) -> go.Figure:
                 "font": {"size": 16},
             }
         ],
-        template="plotly_dark",
+        template="plotly_white",
     )
     return fig
 
@@ -143,7 +175,10 @@ def _build_notebook_graphs() -> tuple[str, go.Figure, go.Figure, pd.DataFrame]:
 
     df["episode"] = pd.to_numeric(df["episode"], errors="coerce").fillna(0).astype(int)
     df["TOTAL"] = pd.to_numeric(df.get("TOTAL", 0), errors="coerce").fillna(0.0)
-    df["final_position"] = pd.to_numeric(df.get("final_position", 8), errors="coerce").fillna(8.0)
+    if "final_position" in df.columns:
+        df["final_position"] = pd.to_numeric(df["final_position"], errors="coerce").fillna(8.0)
+    else:
+        df["final_position"] = 8.0
     df["is_top4"] = (df["final_position"] <= 4).astype(float)
 
     # Use the latest 100 episodes so graphs reflect current runs.
@@ -181,13 +216,13 @@ def _build_notebook_graphs() -> tuple[str, go.Figure, go.Figure, pd.DataFrame]:
         title="Reward per Episode (Latest 100)",
         xaxis_title="Episode",
         yaxis_title="Reward",
-        template="plotly_dark",
+        template="plotly_white",
     )
     win_fig.update_layout(
         title="Win Rate vs Episodes (Latest 100)",
         xaxis_title="Episode",
         yaxis_title="Win Rate",
-        template="plotly_dark",
+        template="plotly_white",
     )
     graph_table = pd.DataFrame(
         [
@@ -232,7 +267,7 @@ def _build_behavior_comparison_figure(behaviors_data) -> go.Figure:
         title="Before vs After Behavior",
         barmode="group",
         yaxis_title="Score",
-        template="plotly_dark",
+        template="plotly_white",
     )
     return fig
 
@@ -402,9 +437,18 @@ def load_training_metrics():
     return _build_notebook_graphs()
 
 
-with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as demo:
+with gr.Blocks(title="IPL RL Auction Environment") as demo:
     gr.Markdown("# IPL Multi-Agent RL Auction Environment")
-    
+
+    with gr.Tab("🏆 Leaderboard"):
+        with gr.Column(elem_classes=["ipl-leaderboard-wrap"]):
+            gr.Markdown("## IPL RL Agent — Leaderboard Score", elem_classes=["ipl-leaderboard-heading"])
+            score_md = gr.HTML('<div class="ipl-lb-score">Score: Loading…</div>')
+            details_md = gr.HTML('<div class="ipl-lb-details">Loading details…</div>')
+            curve_img = gr.Image(label="Reward curve — before vs after this run", type="filepath")
+        refresh_btn = gr.Button("🔄 Refresh Score", variant="primary")
+        refresh_btn.click(fn=_load_leaderboard_ui, outputs=[score_md, details_md, curve_img])
+
     with gr.Tab("Phase 1: Auction"):
         with gr.Row():
             with gr.Column(scale=1):
@@ -452,6 +496,7 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
 - Phase 1: Final team rosters with spend.
 - Phase 2: Full league and playoff results with toss outcomes.
 - All Graphs: reward and win-rate graphs with data table.
+- Leaderboard: Hugging Face–style score from `training/logs/gradio_score.json` and before/after reward curve.
 """
         )
 
@@ -475,6 +520,49 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
         fn=load_training_metrics,
         outputs=[results_out, reward_plot, win_plot, graph_table_out],
     )
+    demo.load(
+        fn=_load_leaderboard_ui,
+        outputs=[score_md, details_md, curve_img],
+    )
 
 if __name__ == "__main__":
-    demo.launch()
+    _orange_white = gr.themes.Soft(
+        primary_hue=gr.themes.colors.orange,
+        secondary_hue=gr.themes.colors.amber,
+        neutral_hue=gr.themes.colors.stone,
+    )
+    demo.launch(
+        theme=_orange_white,
+        css="""
+.gradio-container { background: linear-gradient(180deg, #fff5eb 0%, #ffffff 45%) !important; }
+main .block { border-radius: 12px !important; }
+
+/* Leaderboard: force readable text on cream background */
+.ipl-leaderboard-wrap,
+.ipl-leaderboard-wrap .prose,
+.ipl-leaderboard-wrap .prose * {
+  color: #0f172a !important;
+  opacity: 1 !important;
+}
+.ipl-leaderboard-heading,
+.ipl-leaderboard-heading * {
+  color: #0c1222 !important;
+}
+.ipl-lb-score {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a !important;
+  margin: 0.25rem 0 0.75rem 0;
+  line-height: 1.3;
+}
+.ipl-lb-score-num { color: #c2410c !important; }
+.ipl-lb-score-den { color: #0f172a !important; font-weight: 700; }
+.ipl-lb-details,
+.ipl-lb-details p,
+.ipl-lb-details strong {
+  color: #1e293b !important;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+""",
+    )

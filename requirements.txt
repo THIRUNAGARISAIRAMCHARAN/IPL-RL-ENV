@@ -1,17 +1,15 @@
 openenv
 gradio>=5.10.0
-streamlit
 python-docx
 matplotlib
 numpy
 pandas
 plotly
-trl==0.9.6
+trl>=0.9.6
 transformers>=4.44.0
-tokenizers>=0.19.1
+tokenizers>=0.20.0
 torch
 bitsandbytes
 datasets
 accelerate
 wandb
-# force-rebuild-v3 (TRAIN_EPISODES=300 UI)

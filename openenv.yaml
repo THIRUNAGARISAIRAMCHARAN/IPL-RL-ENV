@@ -1,10 +1,14 @@
-spec_version: 1
-name: ipl-rl-auction
-description: "Multi-agent reinforcement learning environment for IPL auction strategy where 8 AI agents learn to draft, manage, and optimize championship-winning cricket teams."
-entry_point: app.py
-sdk_version: "4.0.0"
-tags:
-  - multi-agent
-  - ipl
-  - auction
-  - reinforcement-learning
+name: IPL Multi-Agent Auction Environment
+description: >
+  8 IPL franchises compete in a financially capped auction to build
+  the best cricket squad. Tests multi-agent reasoning and long-horizon planning.
+version: 1.0.0
+themes:
+  - multi-agent-interactions
+  - long-horizon-planning
+tools:
+  - bid
+  - pass_player
+reset: reset
+model: Qwen/Qwen2.5-0.5B-Instruct
+framework: huggingface-trl
