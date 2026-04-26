@@ -124,6 +124,13 @@ def _build_notebook_graphs() -> tuple[str, go.Figure, go.Figure, pd.DataFrame]:
     df["TOTAL"] = pd.to_numeric(df.get("TOTAL", 0), errors="coerce").fillna(0.0)
     df["final_position"] = pd.to_numeric(df.get("final_position", 8), errors="coerce").fillna(8.0)
     df["is_top4"] = (df["final_position"] <= 4).astype(float)
+
+    # Use the latest 100 episodes so graphs reflect current runs.
+    if len(df) > 0:
+        latest_episode = int(df["episode"].max())
+        min_episode = max(0, latest_episode - 99)
+        df = df[df["episode"] >= min_episode].copy()
+
     # Match Colab-style line graphs.
     reward_fig = go.Figure()
     win_fig = go.Figure()
@@ -150,13 +157,13 @@ def _build_notebook_graphs() -> tuple[str, go.Figure, go.Figure, pd.DataFrame]:
         lines.append(f"{team}: Avg Reward = {float(tdf['TOTAL'].tail(10).mean()):.1f}")
 
     reward_fig.update_layout(
-        title="Reward per Episode",
+        title="Reward per Episode (Latest 100)",
         xaxis_title="Episode",
         yaxis_title="Reward",
         template="plotly_dark",
     )
     win_fig.update_layout(
-        title="Win Rate vs Episodes",
+        title="Win Rate vs Episodes (Latest 100)",
         xaxis_title="Episode",
         yaxis_title="Win Rate",
         template="plotly_dark",
