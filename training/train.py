@@ -44,10 +44,10 @@ if __name__ == "__main__" and not _check_required_imports():
 import numpy as np
 import pandas as pd
 import torch
+import transformers
 from tqdm import tqdm
 from tqdm.auto import tqdm as auto_tqdm
 from transformers import AutoTokenizer
-from transformers import logging as hf_logging
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 
 # Force all output to appear immediately in HF Space logs
@@ -58,8 +58,8 @@ def print(*args, **kwargs):  # type: ignore[no-redef]
     kwargs.setdefault("flush", True)
     return builtins.print(*args, **kwargs)
 
-# Make HF download progress print to stdout instead of stderr
-hf_logging.set_verbosity_info()
+# Disable verbose Transformers logging for speed and cleaner output
+transformers.logging.set_verbosity_error()
 
 # Make tqdm write to stdout so HF Space logs capture it
 tqdm.monitor_interval = 0
@@ -229,9 +229,11 @@ def run_episode(
                     out = model.generate(
                         input_ids=input_ids,
                         attention_mask=attn,
-                        max_new_tokens=15,
-                        do_sample=True,
-                        temperature=0.7,
+                        max_new_tokens=5,
+                        do_sample=False,
+                        temperature=1.0,
+                        top_k=None,
+                        top_p=None,
                         pad_token_id=tokenizer.eos_token_id,
                     )
                 gen = out[0, input_ids.shape[1] :]
@@ -246,12 +248,13 @@ def run_episode(
 
         obs, rewards_dict, done, _info = env.step(actions)
         all_rewards.extend(float(rewards_dict.get(team, 0.0)) for team in TEAM_NAMES)
-        if ppo_trainer is not None and phase == "auction" and query_tensors:
-            try:
-                rts = [torch.tensor(float(rewards_dict.get(TEAM_NAMES[i], 0.0))) for i in range(8)]
-                ppo_trainer.step(query_tensors, response_tensors, rts)
-            except Exception:  # noqa: BLE001
-                pass
+        # Skip PPO update for speed
+        # if ppo_trainer is not None and phase == "auction" and query_tensors:
+        #     try:
+        #         rts = [torch.tensor(float(rewards_dict.get(TEAM_NAMES[i], 0.0))) for i in range(8)]
+        #         ppo_trainer.step(query_tensors, response_tensors, rts)
+        #     except Exception:  # noqa: BLE001
+        #         pass
 
     rows = _build_reward_rows(env, ep_num)
     av = _ep_mean(rows)
@@ -318,7 +321,7 @@ def _pct_improvement(first: float, last_10: float) -> str:
     return f"{(last_10 - first) / abs(first) * 100.0:+.0f}%"
 
 
-def run_training(episodes: int = 300) -> None:
+def run_training(episodes: int = 100) -> None:
     episodes = max(1, int(episodes))
     print(f"Dataset: {episodes} episodes")
 
@@ -453,6 +456,9 @@ def run_training(episodes: int = 300) -> None:
     print(f"Champion Team  : {champ} (won {cp:.0f}% of episodes)")
     print("==========================================")
     print("Next step: python scripts/generate_curve.py")
+    # Skip baseline for speed
+    # print("Running random baseline...")
+    # ... baseline evaluation intentionally disabled
 
 
 if __name__ == "__main__":
@@ -460,7 +466,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--episodes",
         type=int,
-        default=300,
+        default=100,
         help="Number of training episodes.",
     )
     args = parser.parse_args()

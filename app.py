@@ -9,7 +9,7 @@ from agents.base_agent import BaseIPLAgent
 from training.train import run_training
 
 # Single source of truth for Space + button label (must match train.py default if you change both).
-TRAIN_EPISODES = 300
+TRAIN_EPISODES = 100
 
 
 def _start_training():
