@@ -5,6 +5,27 @@ import pandas as pd
 import plotly.graph_objects as go
 from env.ipl_env import IPLAuctionEnv
 from agents.base_agent import BaseIPLAgent
+import threading
+import sys
+
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
+
+
+def _start_training():
+    try:
+        print("===== Training Thread Started =====", flush=True)
+        from training.train import run_training
+        run_training(episodes=100)
+        print("===== Training Complete =====", flush=True)
+    except Exception as e:
+        import traceback
+        print(f"Training error: {e}", flush=True)
+        print(traceback.format_exc(), flush=True)
+
+
+_training_thread = threading.Thread(target=_start_training, daemon=True)
+_training_thread.start()
 
 TEAM_NAMES = ["MI", "CSK", "RCB", "KKR", "DC", "RR", "PBKS", "SRH"]
 TEAM_COLORS = {
