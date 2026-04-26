@@ -86,6 +86,90 @@ def _empty_figure(title: str, msg: str) -> go.Figure:
     return fig
 
 
+def _build_notebook_graphs() -> tuple[str, go.Figure, go.Figure, pd.DataFrame]:
+    reward_fig = _empty_figure("Reward per Episode", "No reward data yet.")
+    win_fig = _empty_figure("Win Rate vs Episodes", "No reward data yet.")
+
+    csv_path = "training/logs/rewards.csv"
+    if not os.path.exists(csv_path):
+        graph_table = pd.DataFrame(
+            [
+                {"Graph": "Reward per Episode", "Metric": "TOTAL reward", "Source": "training/logs/rewards.csv"},
+                {"Graph": "Win Rate vs Episodes", "Metric": "Top-4 finish rolling win rate", "Source": "training/logs/rewards.csv"},
+            ]
+        )
+        return "No training logs found.", reward_fig, win_fig, graph_table
+
+    try:
+        df = pd.read_csv(csv_path)
+    except Exception:
+        graph_table = pd.DataFrame(
+            [
+                {"Graph": "Reward per Episode", "Metric": "TOTAL reward", "Source": "training/logs/rewards.csv"},
+                {"Graph": "Win Rate vs Episodes", "Metric": "Top-4 finish rolling win rate", "Source": "training/logs/rewards.csv"},
+            ]
+        )
+        return "Could not read training logs.", reward_fig, win_fig, graph_table
+
+    if df.empty or "team_id" not in df.columns:
+        graph_table = pd.DataFrame(
+            [
+                {"Graph": "Reward per Episode", "Metric": "TOTAL reward", "Source": "training/logs/rewards.csv"},
+                {"Graph": "Win Rate vs Episodes", "Metric": "Top-4 finish rolling win rate", "Source": "training/logs/rewards.csv"},
+            ]
+        )
+        return "No training data available.", reward_fig, win_fig, graph_table
+
+    df["episode"] = pd.to_numeric(df["episode"], errors="coerce").fillna(0).astype(int)
+    df["TOTAL"] = pd.to_numeric(df.get("TOTAL", 0), errors="coerce").fillna(0.0)
+    df["final_position"] = pd.to_numeric(df.get("final_position", 8), errors="coerce").fillna(8.0)
+    df["is_top4"] = (df["final_position"] <= 4).astype(float)
+    # Match Colab-style line graphs.
+    reward_fig = go.Figure()
+    win_fig = go.Figure()
+    lines = []
+    for team in TEAM_NAMES:
+        tdf = df[df["team_id"] == team].sort_values("episode")
+        if tdf.empty:
+            continue
+        eps = tdf["episode"].tolist()
+        rewards = tdf["TOTAL"].astype(float).tolist()
+        win_rate = (
+            (tdf["final_position"].astype(float) <= 4)
+            .astype(float)
+            .rolling(10, min_periods=1)
+            .mean()
+            .tolist()
+        )
+        reward_fig.add_trace(
+            go.Scatter(x=eps, y=rewards, mode="lines", name=team, line={"color": TEAM_COLORS.get(team, "gray")})
+        )
+        win_fig.add_trace(
+            go.Scatter(x=eps, y=win_rate, mode="lines", name=team, line={"color": TEAM_COLORS.get(team, "gray")})
+        )
+        lines.append(f"{team}: Avg Reward = {float(tdf['TOTAL'].tail(10).mean()):.1f}")
+
+    reward_fig.update_layout(
+        title="Reward per Episode",
+        xaxis_title="Episode",
+        yaxis_title="Reward",
+        template="plotly_dark",
+    )
+    win_fig.update_layout(
+        title="Win Rate vs Episodes",
+        xaxis_title="Episode",
+        yaxis_title="Win Rate",
+        template="plotly_dark",
+    )
+    graph_table = pd.DataFrame(
+        [
+            {"Graph": "Reward per Episode", "Metric": "TOTAL reward", "Source": "training/logs/rewards.csv"},
+            {"Graph": "Win Rate vs Episodes", "Metric": "Top-4 finish rolling win rate", "Source": "training/logs/rewards.csv"},
+        ]
+    )
+    return "\n".join(lines) or "No data.", reward_fig, win_fig, graph_table
+
+
 def _build_behavior_comparison_figure(behaviors_data) -> go.Figure:
     metrics = ["overbid_rate", "block_rate", "patience_score", "bluff_success_rate"]
     metric_labels = ["Overbid", "Block", "Patience", "Bluff Success"]
@@ -269,16 +353,7 @@ def run_demo_auction():
     champion = results.get("champion", "N/A")
     champ_text = f"## FINAL WINNER: {_team_label(champion)}"
 
-    # Transfer Activity
-    transfer_results = last_info.get("transfer_results", {})
-    transfer_text = "### Mid-Season Transfers\n"
-    transfers_found = False
-    for tid, res in transfer_results.items():
-        if res.get("accepted"):
-            transfers_found = True
-            transfer_text += f"- **{tid}** successfully traded players.\n"
-    if not transfers_found:
-        transfer_text += "No trades were executed in this window."
+    metrics_stats, metrics_fig_1, metrics_fig_2, metrics_table = _build_notebook_graphs()
 
     return (
         *team_roster_dfs,
@@ -288,86 +363,15 @@ def run_demo_auction():
         qualification_text,
         bracket_text,
         champ_text,
-        transfer_text
+        metrics_stats,
+        metrics_fig_1,
+        metrics_fig_2,
+        metrics_table,
     )
 
 
 def load_training_metrics():
-    reward_fig = _empty_figure("Reward per Episode", "No training logs found.")
-    win_fig = _empty_figure("Win Rate vs Episodes", "No training logs found.")
-    budget_fig = _empty_figure("Budget Efficiency vs Episodes", "No training logs found.")
-    behavior_fig = _empty_figure("Before vs After Behavior", "No behavior logs found.")
-
-    try:
-        path = "training/logs/reward_curve.json"
-        if not os.path.exists(path):
-            return "No training logs found.", reward_fig, win_fig, budget_fig, behavior_fig, "No learning proof yet."
-        with open(path, "r", encoding="utf-8") as f:
-            curve = json.load(f)
-
-        episodes = curve.get("episodes", [])
-        teams = curve.get("teams", {})
-        lines = []
-        for team, metrics in teams.items():
-            rewards = metrics.get("rewards", [])
-            if rewards:
-                avg = sum(rewards[-10:]) / max(1, len(rewards[-10:]))
-                lines.append(f"{team}: Avg Reward = {avg:.1f}")
-            if episodes and len(rewards) == len(episodes):
-                reward_fig.add_trace(
-                    go.Scatter(
-                        x=episodes,
-                        y=rewards,
-                        name=team,
-                        line={"color": TEAM_COLORS.get(team, "gray")},
-                    )
-                )
-            win_rate = metrics.get("win_rate", [])
-            if episodes and len(win_rate) == len(episodes):
-                win_fig.add_trace(
-                    go.Scatter(
-                        x=episodes,
-                        y=win_rate,
-                        name=team,
-                        line={"color": TEAM_COLORS.get(team, "gray")},
-                    )
-                )
-            budget_eff = metrics.get("budget_efficiency", [])
-            if episodes and len(budget_eff) == len(episodes):
-                budget_fig.add_trace(
-                    go.Scatter(
-                        x=episodes,
-                        y=budget_eff,
-                        name=team,
-                        line={"color": TEAM_COLORS.get(team, "gray")},
-                    )
-                )
-
-        reward_fig.update_layout(title="Reward per Episode", xaxis_title="Episode", template="plotly_dark")
-        win_fig.update_layout(title="Win Rate vs Episodes", xaxis_title="Episode", template="plotly_dark")
-        budget_fig.update_layout(title="Budget Efficiency vs Episodes", xaxis_title="Episode", template="plotly_dark")
-
-        behavior_path = "training/logs/behavior_summaries.json"
-        if os.path.exists(behavior_path):
-            with open(behavior_path, "r", encoding="utf-8") as f:
-                behavior_data = json.load(f)
-            behavior_fig = _build_behavior_comparison_figure(behavior_data)
-
-        proof_path = "training/logs/learning_proof.json"
-        proof_text = "No learning proof yet."
-        if os.path.exists(proof_path):
-            with open(proof_path, "r", encoding="utf-8") as f:
-                proof = json.load(f)
-            reward_imp = float(proof.get("reward_improvement_pct", 0.0))
-            win_imp = float(proof.get("win_rate_improvement_pct", 0.0))
-            proof_text = (
-                f"Reward improvement: **{reward_imp:+.1f}%**  |  "
-                f"Win rate improvement: **{win_imp:+.1f}%**"
-            )
-
-        return "\n".join(lines) or "No data.", reward_fig, win_fig, budget_fig, behavior_fig, proof_text
-    except Exception:
-        return "No training data available.", reward_fig, win_fig, budget_fig, behavior_fig, "Could not load learning proof."
+    return _build_notebook_graphs()
 
 
 with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as demo:
@@ -379,7 +383,7 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
                 run_btn = gr.Button("Run Full Simulation Cycle", variant="primary")
                 gr.Markdown(
                     "Run the full cycle to populate team-wise final rosters, season table, "
-                    "all 56 match results, playoffs, and transfer summary."
+                    "all 56 match results and playoffs."
                 )
             with gr.Column(scale=2):
                 gr.Markdown("### Final Rosters (Team-wise)")
@@ -402,19 +406,14 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
             bracket_out = gr.Markdown("### Playoffs")
         champ_out = gr.Markdown("## WINNER: -")
         
-    with gr.Tab("Phase 3: Transfer"):
-        transfer_out = gr.Markdown("-")
-
-    with gr.Tab("Training Metrics"):
-        results_out = gr.Textbox(label="Reward Stats", lines=8)
-        proof_out = gr.Markdown("No learning proof yet.")
+    with gr.Tab("All Graphs"):
+        results_out = gr.Textbox(label="Performance Summary", lines=4)
         reward_plot = gr.Plot(label="Reward per Episode")
         win_plot = gr.Plot(label="Win Rate vs Episodes")
-        budget_plot = gr.Plot(label="Budget Efficiency vs Episodes")
-        behavior_plot = gr.Plot(label="Before vs After Behavior")
+        graph_table_out = gr.Dataframe(label="Graph Data Table")
         gr.Button("Refresh Logs & Graphs").click(
             fn=load_training_metrics,
-            outputs=[results_out, reward_plot, win_plot, budget_plot, behavior_plot, proof_out],
+            outputs=[results_out, reward_plot, win_plot, graph_table_out],
         )
 
     with gr.Tab("About"):
@@ -424,8 +423,7 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
 
 - Phase 1: Final team rosters with spend.
 - Phase 2: Full league and playoff results with toss outcomes.
-- Phase 3: Transfer outcomes.
-- Training Metrics: performance result graphs.
+- All Graphs: reward and win-rate graphs with data table.
 """
         )
 
@@ -439,12 +437,15 @@ with gr.Blocks(title="IPL RL Auction Environment", theme=gr.themes.Soft()) as de
             qual_out,
             bracket_out,
             champ_out,
-            transfer_out,
+            results_out,
+            reward_plot,
+            win_plot,
+            graph_table_out,
         ],
     )
     demo.load(
         fn=load_training_metrics,
-        outputs=[results_out, reward_plot, win_plot, budget_plot, behavior_plot, proof_out],
+        outputs=[results_out, reward_plot, win_plot, graph_table_out],
     )
 
 if __name__ == "__main__":
